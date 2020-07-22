@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+// assumes:
+// position (3), normal (3), texUV (2)
 VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsigned int* indices, unsigned int numIndices)
   :m_NumVerts(numVerts)
   , m_NumIndices(numIndices)
@@ -32,26 +34,37 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsign
   );
 
   // specify a vertex layout aka vertex attributes
-  // current layout is a position with three float values
+  // position
   glEnableVertexAttribArray(0); // enable first attribute 0
-  // specify size, type and format of attribute
   glVertexAttribPointer(
     0                     // attribute index
     , 3                   // number of components
     , GL_FLOAT            // type of components
     , GL_FALSE            // used only for integral types
-    , sizeof(float) * 5   // stride (usually size of each vertex)
+    , sizeof(float) * 8   // stride (usually size of each vertex)
     , 0                   // offset from start of vertex to this attrib
   );
 
+  // normal
   glEnableVertexAttribArray(1); // enable UV attrib
   glVertexAttribPointer(
     1                     // attrib. index
+    , 3                   // only 2 components in UV
+    , GL_FLOAT
+    , GL_FALSE
+    , sizeof(float) * 8
+    , reinterpret_cast<void*>(sizeof(float) * 3) // offest pointer
+  );
+
+  // tex UV
+  glEnableVertexAttribArray(2); // enable UV attrib
+  glVertexAttribPointer(
+    2                     // attrib. index
     , 2                   // only 2 components in UV
     , GL_FLOAT
     , GL_FALSE
-    , sizeof(float) * 5
-    , reinterpret_cast<void*>(sizeof(float) * 3) // offest pointer 
+    , sizeof(float) * 8
+    , reinterpret_cast<void*>(sizeof(float) * 3) // offest pointer
   );
 }
 

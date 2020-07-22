@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Renderer.h"
 
 #include <GL/glew.h>
 
@@ -13,12 +14,12 @@ SpriteComponent::SpriteComponent(class Actor* owner, int drawOrder)
   , m_TextureWidth(0)
   , m_TextureHeight(0)
   {
-    m_Owner->GetGame()->AddSprite(this);
+    m_Owner->GetGame()->GetRenderer()->AddSprite(this);
   }
 
 SpriteComponent::~SpriteComponent()
 {
-  m_Owner->GetGame()->RemoveSprite(this);
+  m_Owner->GetGame()->GetRenderer()->RemoveSprite(this);
 }
 
 void SpriteComponent::Draw(Shader* shader)

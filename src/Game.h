@@ -9,24 +9,14 @@
 
 class Game {
 private:
-  SDL_Window* m_Window;
-  SDL_GLContext m_Context;
+  std::vector<class Actor*> m_Actors;
+  std::vector<class Actor*> m_PendingActors;
 
-  float m_DeltaTime;
+  class Renderer* m_Renderer;
+  Uint32 m_TicksCount;
 
   bool m_IsRunning;
   bool m_UpdatingActors;
-  Uint32 m_TicksCount;
-  class Map* m_Map;
-
-  std::vector<class Actor*> m_Actors;
-  std::vector<class Actor*> m_PendingActors;
-  std::vector<class SpriteComponent*> m_Sprites;
-  std::unordered_map<std::string, class Texture*> m_Textures;
-
-  // OpenGL
-  class VertexArray* m_SpriteVerts;
-  class Shader* m_SpriteShader;
 
 public:
   Game();
@@ -36,9 +26,8 @@ public:
 
   void AddActor(class Actor* actor);
   void RemoveActor(class Actor* actor);
-  void AddSprite(class SpriteComponent* sprite);
-  void RemoveSprite(class SpriteComponent* sprite);
-  class Texture* GetTexture(const std::string& fileName);
+
+  class Renderer* GetRenderer();
 
 private:
   void ProcessInput();

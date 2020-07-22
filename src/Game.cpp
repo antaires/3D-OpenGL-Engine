@@ -3,95 +3,40 @@
 #include "Actor.h"
 #include "Constants.h"
 #include "SpriteComponent.h"
-#include "VertexArray.h"
-#include "Shader.h"
-#include "Texture.h"
+#include "Renderer.h"
 
 #include <GL/glew.h>
-
 #include <algorithm>
 
 #include <iostream> // remove
 
 Game::Game()
-  : m_Window(nullptr)
-  , m_DeltaTime(0)
+  : m_Renderer(nullptr)
+  , m_TicksCount(0)
   , m_IsRunning(true)
   , m_UpdatingActors(false)
-  , m_TicksCount(0)
-  , m_SpriteVerts(nullptr)
-  , m_SpriteShader(nullptr)
 {}
 
 bool Game::Initialize()
 {
-  if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0)
   {
-    SDL_Log("Unable to Initialize SDL: %s", SDL_GetError());
+    SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
     return false;
   }
 
-  // set up openGL attributes, returns 0 if succes
-  // use the core openGL profile
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-  // specifiy version 3.3
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-
-  // request color buffer with 8-bits per RGBA channel
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-  // enable double buffering
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  // force OpenGL to sue hardware acceleration
-  SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-
-  m_Window = SDL_CreateWindow(
-    "Asteroids"
-    , 100   // top left  x-coord
-    , 100   // top left  y-coord
-    , SCREEN_WIDTH  // width
-    , SCREEN_HEIGHT   // height
-    , SDL_WINDOW_OPENGL     // use openGL
-  );
-  if (!m_Window)
+  // Create the renderer
+  m_Renderer = new Renderer(this);
+  if (!m_Renderer->Initialize((float) SCREEN_WIDTH, (float) SCREEN_HEIGHT))
   {
-    SDL_Log("Failed to create window: %s", SDL_GetError());
+    SDL_Log("Failed to initialize renderer");
+    delete m_Renderer;
+    m_Renderer = nullptr;
     return false;
   }
-
-  // create open GL context and saves it to member variable
-  m_Context = SDL_GL_CreateContext(m_Window);
-
-  // required for mac! without this, a rectangle is drawn as a rhombus
-  int screenWidth, screenHeight;
-  SDL_GL_GetDrawableSize(m_Window, &screenWidth, &screenHeight );
-  glViewport(0, 0, screenWidth, screenHeight); // adjust to high density screen
-
-  // init GLEW
-  glewExperimental = GL_TRUE;
-  if (glewInit() != GLEW_OK)
-  {
-    SDL_Log("Failed to initialize GLEW");
-    return false;
-  }
-  glGetError(); // clears benign error code
-
-  if(!LoadShaders())
-  {
-    SDL_Log("Failed to load shaders");
-    return false;
-  }
-
-  // create quad for drawing sprites
-  CreateSpriteVerts();
 
   LoadData();
-
   m_TicksCount = SDL_GetTicks();
-
   return true;
 }
 
@@ -135,13 +80,13 @@ void Game::ProcessInput()
   const uint32_t mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 
   // handle input
-  m_UpdatingActors = true;
+  // m_UpdatingActors = true;
   for(auto actor: m_Actors)
   {
     actor->ProcessInput(keyState);
     actor->ProcessMouse(mouseState, mouseX, mouseY);
   }
-  m_UpdatingActors = false;
+  // m_UpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -150,12 +95,12 @@ void Game::UpdateGame()
   while(!SDL_TICKS_PASSED(SDL_GetTicks(), m_TicksCount + 16));
 
   // deltaTime is difference in ticks from last frame
-  m_DeltaTime = (SDL_GetTicks() - m_TicksCount) / 1000.0f;
+  float deltaTime = (SDL_GetTicks() - m_TicksCount) / 1000.0f;
 
   // clamp max delta time value (to avoid jumping ahead during debug)
-  if (m_DeltaTime > 0.05f)
+  if (deltaTime > 0.05f)
   {
-    m_DeltaTime = 0.05f;
+    deltaTime = 0.05f;
   }
   m_TicksCount = SDL_GetTicks();
 
@@ -163,7 +108,7 @@ void Game::UpdateGame()
   m_UpdatingActors = true;
   for(auto actor: m_Actors)
   {
-    actor->Update(m_DeltaTime);
+    actor->Update(deltaTime);
   }
   m_UpdatingActors = false;
 
@@ -188,14 +133,115 @@ void Game::UpdateGame()
   // delete dead actors
   for(auto actor : deadActors)
   {
-    // TODO delete properly from actors
     auto it = std::find(m_Actors.begin(), m_Actors.end(), actor);
     if (it != m_Actors.end())
     {
       m_Actors.erase(it);
+      // delete actor // TODO
     }
   }
 }
+
+void Game::GenerateOutput()
+{
+  m_Renderer->Draw();
+}
+
+void Game::LoadData()
+{
+  /* TODO uncomment
+	// Create actors
+	Actor* a = new Actor(this);
+	a->SetPosition(Vector3(200.0f, 75.0f, 0.0f));
+	a->SetScale(100.0f);
+	Quaternion q(Vector3::UnitY, -Math::PiOver2);
+	q = Quaternion::Concatenate(q, Quaternion(Vector3::UnitZ, Math::Pi + Math::Pi / 4.0f));
+	a->SetRotation(q);
+	MeshComponent* mc = new MeshComponent(a);
+	mc->SetMesh(m_Renderer->GetMesh("assets/Cube.gpmesh"));
+
+	a = new Actor(this);
+	a->SetPosition(Vector3(200.0f, -75.0f, 0.0f));
+	a->SetScale(3.0f);
+	mc = new MeshComponent(a);
+	mc->SetMesh(m_Renderer->GetMesh("assets/Sphere.gpmesh"));
+
+	// Setup floor
+	const float start = -1250.0f;
+	const float size = 250.0f;
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			a = new PlaneActor(this);
+			a->SetPosition(Vector3(start + i * size, start + j * size, -100.0f));
+		}
+	}
+
+	// Left/right walls
+	q = Quaternion(Vector3::UnitX, Math::PiOver2);
+	for (int i = 0; i < 10; i++)
+	{
+		a = new PlaneActor(this);
+		a->SetPosition(Vector3(start + i * size, start - size, 0.0f));
+		a->SetRotation(q);
+
+		a = new PlaneActor(this);
+		a->SetPosition(Vector3(start + i * size, -start + size, 0.0f));
+		a->SetRotation(q);
+	}
+
+	q = Quaternion::Concatenate(q, Quaternion(Vector3::UnitZ, Math::PiOver2));
+	// Forward/back walls
+	for (int i = 0; i < 10; i++)
+	{
+		a = new PlaneActor(this);
+		a->SetPosition(Vector3(start - size, start + i * size, 0.0f));
+		a->SetRotation(q);
+
+		a = new PlaneActor(this);
+		a->SetPosition(Vector3(-start + size, start + i * size, 0.0f));
+		a->SetRotation(q);
+	}
+
+	// Setup lights
+	m_Renderer->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
+	DirectionalLight& dir = m_Renderer->GetDirectionalLight();
+	dir.mDirection = Vector3(0.0f, -0.707f, -0.707f);
+	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
+	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
+
+	// Camera actor
+	m_CameraActor = new CameraActor(this);
+
+	// UI elements
+	a = new Actor(this);
+	a->SetPosition(Vector3(-350.0f, -350.0f, 0.0f));
+	SpriteComponent* sc = new SpriteComponent(a);
+	sc->SetTexture(m_Renderer->GetTexture("assets/HealthBar.png"));
+
+	a = new Actor(this);
+	a->SetPosition(Vector3(375.0f, -275.0f, 0.0f));
+	a->SetScale(0.75f);
+	sc = new SpriteComponent(a);
+	sc->SetTexture(m_Renderer->GetTexture("assets/Radar.png"));
+
+  */
+}
+
+void Game::UnloadData()
+{
+  while(!m_Actors.empty())
+  {
+    delete m_Actors.back();
+  }
+
+  if(m_Renderer)
+  {
+    m_Renderer->UnloadData();
+  }
+}
+
 
 void Game::AddActor(Actor* actor)
 {
@@ -226,154 +272,17 @@ void Game::RemoveActor(Actor* actor)
   }
 }
 
-// hard coded for now, TODO: load from files and binary
-void Game::LoadData()
+Renderer* Game::GetRenderer()
 {
-}
-
-void Game::UnloadData()
-{
-  while(!m_Actors.empty())
-  {
-    delete m_Actors.back();
-  }
-
-  for(auto t : m_Textures)
-  {
-    t.second->Unload();
-    // SDL_DestroyTexture(t.second);
-  }
-  m_Textures.clear();
-}
-
-void Game::CreateSpriteVerts()
-{
-  // V texture coord is flipped to account for how openGL expects image data upsidedown
-  // pos = 3 #s, UV coords = 2 #s
-  float vertexBuffer[] = {
-    -0.5f,  0.5f, 0.f, 0.f, 0.f, // top left
-		 0.5f,  0.5f, 0.f, 1.f, 0.f, // top right
-		 0.5f, -0.5f, 0.f, 1.f, 1.f, // bottom right
-		-0.5f, -0.5f, 0.f, 0.f, 1.f // bottom left
-  };
-
-	unsigned int indexBuffer[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-  m_SpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
-}
-
-bool Game::LoadShaders()
-{
-  m_SpriteShader = new Shader();
-  if(!m_SpriteShader->Load("shaders/Sprite.vert", "shaders/Sprite.frag"))
-  {
-    return false;
-  }
-  m_SpriteShader->SetActive();
-
-  // Matrix4 viewProj = Matrix4::CreateSimpleViewProj(m_ScreenWidth, m_ScreenHeight);
-  Matrix4 viewProj = Matrix4::CreateSimpleViewProj((float) SCREEN_WIDTH, (float) SCREEN_HEIGHT);
-  m_SpriteShader->SetMatrixUniform("uViewProj", viewProj);
-
-  return true;
-}
-
-Texture* Game::GetTexture(const std::string& fileName)
-{
-  Texture* texture = nullptr;
-
-  // is texture already loaded?
-  auto it = m_Textures.find(fileName);
-  if (it != m_Textures.end())
-  {
-    texture = it->second;
-  } else {
-    // load texture
-    texture = new Texture();
-    if (texture->Load(fileName))
-    {
-      m_Textures.emplace(fileName, texture);
-    } else {
-      delete texture;
-      texture = nullptr;
-    }
-  }
-  return texture;
-}
-
-
-void Game::AddSprite(SpriteComponent* sprite)
-{
-  // insert by sorted order
-  int myDrawOrder = sprite->GetDrawOrder();
-  auto it = m_Sprites.begin();
-  for(; it != m_Sprites.end(); ++it)
-  {
-    if (myDrawOrder < (*it)->GetDrawOrder())
-    {
-      break;
-    }
-  }
-  m_Sprites.insert(it, sprite);
-}
-
-void Game::RemoveSprite(SpriteComponent* sprite)
-{
-  // cant use swap here because need to preserve ordering
-  auto it = std::find(m_Sprites.begin(), m_Sprites.end(), sprite);
-  if (it != m_Sprites.end())
-  {
-    m_Sprites.erase(it);
-  }
-}
-
-void Game::GenerateOutput()
-{
-  // modulate color based on deltaTime
-  static float r = 0;
-  static float g = 0;
-  static float b = 0;
-  static float changeFactor = 0.1;
-  b+=changeFactor * m_DeltaTime;
-  if (b > 1.0f || b < 0){g += changeFactor * m_DeltaTime;}
-  if (g > 1.0f || g < 0){r += changeFactor * m_DeltaTime;}
-  if (r > 1.0f || r < 0){ changeFactor *= -1;}
-
-  glClearColor(r, g, b, 1.0f);
-
-  // clear color buffer
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  // draw scene
-  // set sprite shader and vertex array objects active
-  m_SpriteShader->SetActive();
-  m_SpriteVerts->SetActive();
-
-  // enable alpha blending
-  glEnable(GL_BLEND);
-  glBlendFunc(
-    GL_SRC_ALPHA              // srcFactor is srcAlpha
-    , GL_ONE_MINUS_SRC_ALPHA  // dstFactor is 1 - srcAlpha
-  );
-
-  // draw all sprites
-  for(auto sprite: m_Sprites)
-  {
-    sprite->Draw(m_SpriteShader);
-  }
-
-  // swap buffers, which also displays the scene
-  SDL_GL_SwapWindow(m_Window);
+  return m_Renderer;
 }
 
 void Game::ShutDown()
 {
   UnloadData();
-  IMG_Quit();
-  SDL_GL_DeleteContext(m_Context);
-  SDL_DestroyWindow(m_Window);
+  if(m_Renderer)
+  {
+    m_Renderer->ShutDown();
+  }
   SDL_Quit();
 }
