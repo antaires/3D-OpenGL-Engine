@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "Constants.h"
 #include "SpriteComponent.h"
+#include "MeshComponent.h"
 #include "Renderer.h"
 
 #include <GL/glew.h>
@@ -159,6 +160,7 @@ void Game::LoadData()
 	MeshComponent* mc = new MeshComponent(a);
 	mc->SetMesh(m_Renderer->GetMesh("assets/Cube.gpmesh"));
 
+  /* todo uncomment
 	a = new Actor(this);
 	a->SetPosition(Vector3(200.0f, -75.0f, 0.0f));
 	a->SetScale(3.0f);
@@ -212,6 +214,7 @@ void Game::LoadData()
 
 	// Camera actor
 	m_CameraActor = new CameraActor(this);
+  */
 
 	// UI elements
 	a = new Actor(this);

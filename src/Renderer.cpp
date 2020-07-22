@@ -4,7 +4,7 @@
 #include "Shader.h"
 #include "VertexArray.h"
 #include "SpriteComponent.h"
-// #include "MeshComponent.h"
+#include "MeshComponent.h"
 
 #include <algorithm>
 #include <GL/glew.h>
@@ -137,15 +137,11 @@ void Renderer::Draw()
   m_MeshShader->SetActive();
   // Update view-projection matrix
   m_MeshShader->SetMatrixUniform("uViewProj", m_View * m_Projection);
-
-  // Update lighting uniforms
-  /* TODO uncomment
   SetLightUniforms(m_MeshShader);
   for (auto mc : m_MeshComps)
   {
     mc->Draw(m_MeshShader);
   }
-  */
 
   // Draw all sprite components
   // Disable depth buffering
@@ -191,7 +187,6 @@ void Renderer::RemoveSprite(SpriteComponent* sprite)
 	m_Sprites.erase(iter);
 }
 
-/*
 void Renderer::AddMeshComp(MeshComponent* mesh)
 {
 	m_MeshComps.emplace_back(mesh);
@@ -202,7 +197,6 @@ void Renderer::RemoveMeshComp(MeshComponent* mesh)
 	auto iter = std::find(m_MeshComps.begin(), m_MeshComps.end(), mesh);
 	m_MeshComps.erase(iter);
 }
-*/
 
 Texture* Renderer::GetTexture(const std::string& fileName)
 {

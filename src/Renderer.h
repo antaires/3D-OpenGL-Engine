@@ -28,9 +28,8 @@ public:
   void AddSprite(class SpriteComponent* sprite);
   void RemoveSprite(class SpriteComponent* sprite);
 
-  // TODO uncomment
-  // void AddMeshComp(class MeshComponent* mesh);
-  // void RemoveMeshComp(class MeshComponent* mesh);
+  void AddMeshComp(class MeshComponent* mesh);
+  void RemoveMeshComp(class MeshComponent* mesh);
 
   class Texture* GetTexture(const std::string& fileName);
   class Mesh* GetMesh(const std::string& fileName);
@@ -53,9 +52,8 @@ private:
   // All the sprite components drawn
   std::vector<class SpriteComponent*> m_Sprites;
 
-  // TODO uncomment 
   // All mesh components drawn
-  // std::vector<class MeshComponent*> m_MeshComps;
+  std::vector<class MeshComponent*> m_MeshComps;
 
   // Game
   class Game* m_Game;
