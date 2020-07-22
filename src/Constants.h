@@ -16,5 +16,5 @@ const float ENEMY_HUNT_DISTANCE   = 400.0f;
 const float PLAYER_SHOOT_TIMER = 0.4f;
 const float BULLET_SPEED = 20.0f;
 
-const int SCREEN_WIDTH  = 800;//1024;
-const int SCREEN_HEIGHT = 800;// 600; //768;
+const int SCREEN_WIDTH  = 1024;
+const int SCREEN_HEIGHT = 768;

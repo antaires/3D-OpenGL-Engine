@@ -5,6 +5,8 @@
 #include "SpriteComponent.h"
 #include "MeshComponent.h"
 #include "Renderer.h"
+#include "PlaneActor.h"
+#include "CameraActor.h"
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -12,7 +14,8 @@
 #include <iostream> // remove
 
 Game::Game()
-  : m_Renderer(nullptr)
+  : m_CameraActor(nullptr)
+  , m_Renderer(nullptr)
   , m_TicksCount(0)
   , m_IsRunning(true)
   , m_UpdatingActors(false)
@@ -166,7 +169,6 @@ void Game::LoadData()
 	mc = new MeshComponent(a);
 	mc->SetMesh(m_Renderer->GetMesh("assets/Sphere.gpmesh"));
 
-  /*
 	// Setup floor
 	const float start = -1250.0f;
 	const float size = 250.0f;
@@ -208,13 +210,12 @@ void Game::LoadData()
 	// Setup lights
 	m_Renderer->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
 	DirectionalLight& dir = m_Renderer->GetDirectionalLight();
-	dir.mDirection = Vector3(0.0f, -0.707f, -0.707f);
-	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
-	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
+	dir.m_Direction = Vector3(0.0f, -0.707f, -0.707f);
+	dir.m_DiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
+	dir.m_SpecColor = Vector3(0.8f, 0.8f, 0.8f);
 
 	// Camera actor
 	m_CameraActor = new CameraActor(this);
-  */
 
 	// UI elements
 	a = new Actor(this);

@@ -12,6 +12,8 @@ private:
   std::vector<class Actor*> m_Actors;
   std::vector<class Actor*> m_PendingActors;
 
+  class CameraActor* m_CameraActor;
+
   class Renderer* m_Renderer;
   Uint32 m_TicksCount;
 
