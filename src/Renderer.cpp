@@ -49,7 +49,7 @@ bool Renderer::Initialize(float width, float height)
   SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
   m_Window = SDL_CreateWindow(
-    "Asteroids"
+    ""      // window title
     , 100   // top left  x-coord
     , 100   // top left  y-coord
     , static_cast<int>(m_ScreenWidth)
@@ -260,7 +260,7 @@ bool Renderer::LoadShaders()
 
   // Create basic mesh shader
 	m_MeshShader = new Shader();
-	if (!m_MeshShader->Load("Shaders/BasicMesh.vert", "Shaders/BasicMesh.frag"))
+	if (!m_MeshShader->Load("Shaders/Phong.vert", "Shaders/Phong.frag"))
 	{
 		return false;
 	}
@@ -305,7 +305,6 @@ void Renderer::CreateSpriteVerts()
 
 void Renderer::SetLightUniforms(Shader* shader)
 {
-  /* todo uncomment
 	// Camera position is from inverted view
 	Matrix4 invView = m_View;
 	invView.Invert();
@@ -314,12 +313,12 @@ void Renderer::SetLightUniforms(Shader* shader)
 	shader->SetVectorUniform("uAmbientLight", m_AmbientLight);
 	// Directional light
 	shader->SetVectorUniform("uDirLight.mDirection",
-		m_DirLight.mDirection);
+		m_DirLight.m_Direction);
 	shader->SetVectorUniform("uDirLight.mDiffuseColor",
-		m_DirLight.mDiffuseColor);
+		m_DirLight.m_DiffuseColor);
 	shader->SetVectorUniform("uDirLight.mSpecColor",
-		m_DirLight.mSpecColor);
-  */
+		m_DirLight.m_SpecColor);
+
 }
 
 void Renderer::SetViewMatrix(const Matrix4& view) { m_View = view; }

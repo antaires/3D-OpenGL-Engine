@@ -160,13 +160,13 @@ void Game::LoadData()
 	MeshComponent* mc = new MeshComponent(a);
 	mc->SetMesh(m_Renderer->GetMesh("assets/Cube.gpmesh"));
 
-  /* todo uncomment
 	a = new Actor(this);
 	a->SetPosition(Vector3(200.0f, -75.0f, 0.0f));
 	a->SetScale(3.0f);
 	mc = new MeshComponent(a);
 	mc->SetMesh(m_Renderer->GetMesh("assets/Sphere.gpmesh"));
 
+  /*
 	// Setup floor
 	const float start = -1250.0f;
 	const float size = 250.0f;

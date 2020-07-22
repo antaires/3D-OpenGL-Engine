@@ -51,11 +51,25 @@ void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix)
 
   // send the matrix data to the uniform
   glUniformMatrix4fv(
-    loc                      // unform ID 
+    loc                      // unform ID
     , 1                      // number of matrices
     , GL_TRUE                // set to true if using row vectors
     , matrix.GetAsFloatPtr() // pointer to matrix data
   );
+}
+
+void Shader::SetVectorUniform(const char* name, const Vector3& vector)
+{
+	GLuint loc = glGetUniformLocation(m_ShaderProgram, name);
+	// Send the vector data
+	glUniform3fv(loc, 1, vector.GetAsFloatPtr());
+}
+
+void Shader::SetFloatUniform(const char* name, float value)
+{
+	GLuint loc = glGetUniformLocation(m_ShaderProgram, name);
+	// Send the float data
+	glUniform1f(loc, value);
 }
 
 
