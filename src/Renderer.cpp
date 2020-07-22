@@ -266,16 +266,25 @@ bool Renderer::LoadShaders()
 
   // Create basic mesh shader
 	m_MeshShader = new Shader();
-	if (!m_MeshShader->Load("Shaders/Phong.vert", "Shaders/Phong.frag"))
+	if (!m_MeshShader->Load("Shaders/BasicMesh.vert", "Shaders/BasicMesh.frag"))
 	{
 		return false;
 	}
 	m_MeshShader->SetActive();
 
 	// Set the view-projection matrix
-	m_View = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
-	m_Projection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f),
-		m_ScreenWidth, m_ScreenHeight, 25.0f, 10000.0f);
+	m_View = Matrix4::CreateLookAt(
+    Vector3::Zero     // camera position
+    , Vector3::UnitX  // target position
+    , Vector3::UnitZ  // up
+  );
+	m_Projection = Matrix4::CreatePerspectiveFOV(
+    Math::ToRadians(70.0f)  // horizontal FOV
+    , m_ScreenWidth         // width of view
+    , m_ScreenHeight        // height of view
+    , 25.0f                 // near plane
+    , 10000.0f              // far plane
+  );
 	m_MeshShader->SetMatrixUniform("uViewProj", m_View * m_Projection);
 
   return true;
