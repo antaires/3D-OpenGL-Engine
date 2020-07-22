@@ -41,6 +41,8 @@ bool Renderer::Initialize(float width, float height)
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+  // set up depth buffer (ie Z-buffer)
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
   // enable double buffering
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   // force OpenGL to sue hardware acceleration

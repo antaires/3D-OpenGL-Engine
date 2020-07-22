@@ -149,7 +149,6 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-  /* TODO uncomment
 	// Create actors
 	Actor* a = new Actor(this);
 	a->SetPosition(Vector3(200.0f, 75.0f, 0.0f));
@@ -225,8 +224,6 @@ void Game::LoadData()
 	a->SetScale(0.75f);
 	sc = new SpriteComponent(a);
 	sc->SetTexture(m_Renderer->GetTexture("assets/Radar.png"));
-
-  */
 }
 
 void Game::UnloadData()
