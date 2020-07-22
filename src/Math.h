@@ -554,11 +554,7 @@ public:
 
 	Matrix4()
 	{
-		// *this = Matrix4::Identity
-		mat[0][0] = 1.0f; mat[0][1] = 0.0f; mat[0][2] = 0.0f; mat[0][3] = 0.0f;
-		mat[0][0] = 0.0f; mat[0][1] = 1.0f; mat[0][2] = 0.0f; mat[0][3] = 0.0f;
-		mat[0][0] = 0.0f; mat[0][1] = 0.0f; mat[0][2] = 1.0f; mat[0][3] = 0.0f;
-		mat[0][0] = 0.0f; mat[0][1] = 0.0f; mat[0][2] = 0.0f; mat[0][3] = 1.0f;
+		*this = Matrix4::Identity;
 	}
 
 	explicit Matrix4(float inMat[4][4])

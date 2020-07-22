@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Actor.h"
+//#include "Actor.h"
+#include <cstdint>
 
 class Component {
 protected:
@@ -15,6 +16,4 @@ public:
   virtual void ProcessMouse(const uint32_t mouseState, const int x, const int y);
   virtual void OnUpdateWorldTransform();
   int GetUpdateOrder() const;
-
-  class Actor* GetOwner(); // not const because AI states may make changes
 };

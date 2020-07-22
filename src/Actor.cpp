@@ -1,22 +1,15 @@
 #include "Actor.h"
 #include "Game.h"
+#include "Math.h"
+#include "Component.h"
 
 Actor::Actor(class Game* game)
   : m_State(E_Active)
-  , m_Position(Vector2(0.0f, 0.0f))
+  , m_Position(Vector3::Zero)
+  , m_Rotation(Quaternion::Identity)
   , m_Scale(1.0f)
-  , m_Rotation(0.0f)
   , m_RecomputeWorldTransform(true)
-  , m_PrevPosition(Vector2(0.0f, 0.0f))
-  , m_TopCornerPosition(Vector2(0.0f, 0.0f))
-  , m_Velocity(Vector2(0.0f, 0.0f))
-  , m_ForwardVector(Vector2(0.0f, 0.0f))
-  , m_Width(0)
-  , m_Height(0)
   , m_Game(game)
-  , m_DyingStarted(false)
-  , m_HasCollision(false)
-  , m_GoalPosition(Vector2(0.0f, 0.0f))
 {
   m_Game->AddActor(this);
 }
@@ -42,27 +35,14 @@ void Actor::Update(float deltaTime)
 
     ComputeWorldTransform();
   }
-
-  if (m_State == E_Dying)
-  {
-    HandleDeath();
-    UpdateComponents(deltaTime);
-  }
 }
 
 void Actor::UpdateComponents(float deltaTime)
 {
-    m_PrevPosition = m_Position;
-
     for (auto comp : m_Components)
     {
       comp->Update(deltaTime);
     }
-
-    // update top corner position TODO: still used?
-    m_TopCornerPosition.x = m_Position.x - (m_Width/2);
-    m_TopCornerPosition.y = m_Position.y - (m_Height/2);
-
 }
 
 void Actor::UpdateActor(float deltaTime){}
@@ -95,9 +75,9 @@ void Actor::ProcessMouse(const uint32_t mouseState, const int x, const int y)
 void Actor::ActorInput(const uint8_t* keyState)
 {}
 
-Vector2 Actor::GetForward() const
+Vector3 Actor::GetForward() const
 {
-  return Vector2(Math::Cos(m_Rotation), Math::Sin(m_Rotation));
+  return Vector3::Transform(Vector3::UnitX, m_Rotation);
 }
 
 void Actor::ComputeWorldTransform()
@@ -107,8 +87,8 @@ void Actor::ComputeWorldTransform()
     m_RecomputeWorldTransform = false;
     // scale, rotate then translate
     m_WorldTransform = Matrix4::CreateScale(m_Scale);
-    m_WorldTransform *= Matrix4::CreateRotationZ(m_Rotation);
-    m_WorldTransform *= Matrix4::CreateTranslation(Vector3(m_Position.x, m_Position.y, 0.0f));
+    m_WorldTransform *= Matrix4::CreateFromQuaternion(m_Rotation);
+    m_WorldTransform *= Matrix4::CreateTranslation(m_Position);
 
     // inform components world transform updated
     for(auto comp : m_Components)
@@ -123,19 +103,17 @@ Actor::State Actor::GetState() const { return m_State;}
 
 void Actor::SetState(State state) { m_State = state;}
 
-Vector2 Actor::GetPosition() const { return m_Position;}
+const Vector3& Actor::GetPosition() const { return m_Position;}
 
-void Actor::SetPosition(const Vector2& pos)
+void Actor::SetPosition(const Vector3& pos)
 {
   m_Position = pos;
   m_RecomputeWorldTransform = true;
 }
 
-Vector2 Actor::GetPrevPosition() const { return m_PrevPosition; }
+const Quaternion& Actor::GetRotation() const { return m_Rotation;}
 
-float Actor::GetRotation() const { return m_Rotation;}
-
-void Actor::SetRotation(float rotation)
+void Actor::SetRotation(const Quaternion& rotation)
 {
   m_Rotation = rotation;
   m_RecomputeWorldTransform = true;
@@ -148,30 +126,6 @@ void Actor::SetScale(float scale)
   m_Scale = scale;
   m_RecomputeWorldTransform = true;
 }
-
-Vector2 Actor::GetVelocity() const { return m_Velocity; }
-
-void Actor::SetVelocity(Vector2 velocity) { m_Velocity = velocity; }
-
-Vector2 Actor::GetForwardVector() const { return m_ForwardVector; }
-
-void Actor::SetForwardVector(Vector2 forwardVector) { m_ForwardVector = forwardVector; }
-
-float Actor::GetHeight() const { return m_Height;}
-
-float Actor::GetWidth() const { return m_Width; }
-
-void Actor::SetHeight(float height) { m_Height = height;}
-
-void Actor::SetWidth(float width) { m_Width = width; }
-
-void Actor::SetHasCollision(bool hasCollision) { m_HasCollision = hasCollision; }
-
-Vector2 Actor::GetGoal() const { return m_GoalPosition; }
-
-void Actor::SetGoal(Vector2 goal) { m_GoalPosition = goal; }
-
-const Vector2& Actor::GetTopCornerPosition() const { return m_TopCornerPosition; }
 
 class Game* Actor::GetGame(){return m_Game;}
 
@@ -217,10 +171,3 @@ void Actor::ClampToScreen(float& pos, int objSize, float lowerLimit, float upper
     pos = upperLimit - (objSize/2.0f);
   }
 }
-
-bool Actor::CollidesWithBarrier(Vector2 position, float width, float height) const
-{
-  return m_Game->CollidesWithBarrier(position, width, height);
-}
-
-void Actor::HandleDeath(){}

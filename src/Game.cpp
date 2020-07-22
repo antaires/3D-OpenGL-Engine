@@ -1,11 +1,8 @@
 #include "Game.h"
 #include "SDL2/SDL_image.h"
+#include "Actor.h"
 #include "Constants.h"
 #include "SpriteComponent.h"
-#include "BackgroundSpriteComponent.h"
-#include "CollisionDetection.h"
-#include "TileMapComponent.h"
-#include "Map.h"
 #include "VertexArray.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -22,12 +19,8 @@ Game::Game()
   , m_IsRunning(true)
   , m_UpdatingActors(false)
   , m_TicksCount(0)
-  , m_Map(nullptr)
-  , m_Player(nullptr)
-  , m_EnemySpawnTimer(0.0f)
   , m_SpriteVerts(nullptr)
   , m_SpriteShader(nullptr)
-  // TODO consider setting enemy vector initial size ...
 {}
 
 bool Game::Initialize()
@@ -108,7 +101,6 @@ void Game::RunLoop()
   {
     ProcessInput();
     UpdateGame();
-    HandleCollisions();
     GenerateOutput();
   }
 }
@@ -203,39 +195,6 @@ void Game::UpdateGame()
       m_Actors.erase(it);
     }
   }
-
-  // add new enemies on timer
-  m_EnemySpawnTimer += (1 * m_DeltaTime);
-  if(m_EnemySpawnTimer > 1)
-  {
-    m_EnemySpawnTimer = 0;
-    Enemy* enemy = new Enemy(this, m_Map); // scale set inside class
-    enemy->SetPosition(Vector2(
-      m_Map->GetRand(-SCREEN_WIDTH/2.0f, SCREEN_WIDTH/2.0f)
-      , m_Map->GetRand(-SCREEN_HEIGHT/2.0f, SCREEN_HEIGHT/2.0f)
-    ));
-    m_Enemies.push_back(enemy);
-  }
-}
-
-void Game::HandleCollisions()
-{
-  // player against enemy (ies)
-  // check if collide with Player - if yes then kill player
-  if(m_Player != nullptr && m_Player->GetState() == Actor::E_Active)
-  {
-    for(auto enemy : m_Enemies)
-    {
-      if (enemy != nullptr && enemy->GetState() == Actor::E_Active)
-      {
-        if( CollisionDetection::HasCollision(enemy->GetCircle(), m_Player->GetCircle()) )
-        {
-          m_Player->SetState(Actor::E_Dead);
-        }
-      }
-    }
-  }
-
 }
 
 void Game::AddActor(Actor* actor)
@@ -270,36 +229,6 @@ void Game::RemoveActor(Actor* actor)
 // hard coded for now, TODO: load from files and binary
 void Game::LoadData()
 {
-  // load all textures
-
-  // create path map (barriers and walls) and AI
-  m_Map = new Map("assets/testMap01.csv");
-  m_Map->SetMode(Map::E_BFS); // choose pathfinding algorithm
-
-  // create player
-  m_Player = new Player(this); // scale set inside class
-  m_Player->SetPosition(Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/3));
-
-  // create initial enemies
-  for(int i = 0; i < 5; ++i)
-  {
-    Enemy* enemy = new Enemy(this, m_Map); // scale set inside class
-    enemy->SetPosition(Vector2(
-      m_Map->GetRand(-SCREEN_WIDTH/2.0f, SCREEN_WIDTH/2.0f)
-      , m_Map->GetRand(-SCREEN_HEIGHT/2.0f, SCREEN_HEIGHT/2.0f)
-    ));
-    m_Enemies.push_back(enemy);
-  }
-
-  // create background tile map
-  Actor* tileMapActor = new Actor(this);
-  tileMapActor->SetPosition(Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2));
-  TileMapComponent* tileMapComponent = new TileMapComponent(tileMapActor, 10);
-  // load CSV
-  tileMapComponent->LoadCsv("assets/testMap01.csv");
-  // set texture
-  tileMapComponent->SetTextureRowsCols( 24, 8);
-  tileMapComponent->SetTexture(GetTexture("assets/tiles.png"));
 }
 
 void Game::UnloadData()
@@ -438,27 +367,6 @@ void Game::GenerateOutput()
 
   // swap buffers, which also displays the scene
   SDL_GL_SwapWindow(m_Window);
-}
-
-Vector2 Game::GetPlayerPosition() const
-{
-  return m_Player->GetPosition();
-}
-
-class Player* Game::GetPlayer()
-{
-  return m_Player;
-}
-
-
-std::vector<Enemy*> Game::GetEnemies()
-{
-  return m_Enemies;
-}
-
-bool Game::CollidesWithBarrier(Vector2 pos, float width, float height)
-{
-  return m_Map->CollidesWithBarrier(pos, width, height);
 }
 
 void Game::ShutDown()

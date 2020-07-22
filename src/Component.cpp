@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "Actor.h"
 
 Component::Component(class Actor* owner, int updateOrder)
   : m_Owner(owner)
@@ -25,8 +26,3 @@ void Component::ProcessMouse(const uint32_t mouseState, const int x, const int y
 void Component::OnUpdateWorldTransform(){}
 
 int Component::GetUpdateOrder() const {return m_UpdateOrder;}
-
-class Actor* Component::GetOwner()
-{
-  return m_Owner;
-}
