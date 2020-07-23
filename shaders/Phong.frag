@@ -48,8 +48,9 @@ struct PointLight
 	float mRadiusInfluence;
 };
 
-// Point Light todo: make array
-uniform PointLight uPointLight;
+// Point Lights
+uniform PointLight uPointLight0;
+uniform PointLight uPointLight1;
 
 void main()
 {
@@ -72,22 +73,30 @@ void main()
 		Phong += Diffuse + Specular;
 	}
 
-	// compute for point light
-	// vector from surface to light
-	vec3 PL = normalize(uPointLight.mPos - fragWorldPos);
-	// reflection of -L about N
-	vec3 PR = normalize(reflect(-PL, N));
-	// compute phong reflection from point light
-	float PNdotPL = dot(N, PL);
-	if (PNdotPL > 0)
+	// set up point light array
+	PointLight pointLights[2];
+	pointLights[0] = uPointLight0;
+	pointLights[1] = uPointLight1;
+
+	// compute for all point lights
+	for(int i = 0; i < 2; ++i)
 	{
-		// use sphere of influence
-		float distanceFromLight = length(fragWorldPos - uPointLight.mPos);
-		if (distanceFromLight < uPointLight.mRadiusInfluence)
+		// vector from surface to light
+		vec3 PL = normalize(pointLights[i].mPos - fragWorldPos);
+		// reflection of -L about N
+		vec3 PR = normalize(reflect(-PL, N));
+		// compute phong reflection from point light
+		float PNdotPL = dot(N, PL);
+		if (PNdotPL > 0)
 		{
-			vec3 Diffuse = uPointLight.mDiffuseColor * PNdotPL;
-			vec3 Specular = uPointLight.mSpecColor * pow(max(0.0, dot(PR, V)), uPointLight.mSpecPower);
-			Phong += Diffuse + Specular;
+			// use sphere of influence
+			float distanceFromLight = length(fragWorldPos - pointLights[i].mPos);
+			if (distanceFromLight < pointLights[i].mRadiusInfluence)
+			{
+				vec3 Diffuse = pointLights[i].mDiffuseColor * PNdotPL;
+				vec3 Specular = pointLights[i].mSpecColor * pow(max(0.0, dot(PR, V)), pointLights[i].mSpecPower);
+				Phong += Diffuse + Specular;
+			}
 		}
 	}
 

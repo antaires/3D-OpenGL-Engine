@@ -9,13 +9,32 @@
 #include <algorithm>
 #include <GL/glew.h>
 
+const int numPointLights = 2;
+
 Renderer::Renderer(Game* game)
   :m_Game(game)
   , m_SpriteShader(nullptr)
-{}
+{
+  // set up point lights vector
+  for(int i = 0; i < numPointLights; ++i)
+  {
+    PointLight* pl = new PointLight();
+    pl->m_Pos = Vector3::Zero;
+    pl->m_DiffuseColor = Vector3::Zero;
+    pl->m_SpecColor = Vector3::Zero;
+    pl->m_SpecPower = 0.0f;
+    pl->m_RadiusInfluence = 0.0f;
+    m_PointLights.push_back(pl);
+  }
+}
 
 Renderer::~Renderer()
-{}
+{
+  for(auto pointLight : m_PointLights)
+  {
+    delete pointLight;
+  }
+}
 
 bool Renderer::Initialize(float width, float height)
 {
@@ -347,12 +366,19 @@ void Renderer::SetLightUniforms(Shader* shader)
 	shader->SetVectorUniform("uDirLight.mDiffuseColor", m_DirLight.m_DiffuseColor);
 	shader->SetVectorUniform("uDirLight.mSpecColor", m_DirLight.m_SpecColor);
 
-  // TODO make array
-  shader->SetVectorUniform("uPointLight.mPos", m_PointLight.m_Pos);
-  shader->SetVectorUniform("uPointLight.mDiffuseColor", m_PointLight.m_DiffuseColor);
-  shader->SetVectorUniform("uPointLight.mSpecColor", m_PointLight.m_SpecColor);
-  shader->SetFloatUniform("uPointLight.mSpecPower", m_PointLight.m_SpecPower);
-  shader->SetFloatUniform("uPointLight.mRadiusInfluence", m_PointLight.m_RadiusInfluence);
+  // currently Phong shader can only handle 2 point lights
+  // make point light 0
+  shader->SetVectorUniform("uPointLight0.mPos", m_PointLights.at(0)->m_Pos);
+  shader->SetVectorUniform("uPointLight0.mDiffuseColor", m_PointLights.at(0)->m_DiffuseColor);
+  shader->SetVectorUniform("uPointLight0.mSpecColor", m_PointLights.at(0)->m_SpecColor);
+  shader->SetFloatUniform("uPointLight0.mSpecPower", m_PointLights.at(0)->m_SpecPower);
+  shader->SetFloatUniform("uPointLight0.mRadiusInfluence", m_PointLights.at(0)->m_RadiusInfluence);
+  // make point light 1
+  shader->SetVectorUniform("uPointLight1.mPos", m_PointLights.at(1)->m_Pos);
+  shader->SetVectorUniform("uPointLight1.mDiffuseColor", m_PointLights.at(1)->m_DiffuseColor);
+  shader->SetVectorUniform("uPointLight1.mSpecColor", m_PointLights.at(1)->m_SpecColor);
+  shader->SetFloatUniform("uPointLight1.mSpecPower", m_PointLights.at(1)->m_SpecPower);
+  shader->SetFloatUniform("uPointLight1.mRadiusInfluence", m_PointLights.at(1)->m_RadiusInfluence);
 }
 
 void Renderer::SetViewMatrix(const Matrix4& view) { m_View = view; }
@@ -362,7 +388,7 @@ void Renderer::SetAmbientLight(const Vector3& ambient) { m_AmbientLight = ambien
 DirectionalLight& Renderer::GetDirectionalLight() { return m_DirLight; }
 
 // todo make array
-PointLight& Renderer::GetPointLight() { return m_PointLight; }
+std::vector<PointLight*> Renderer::GetPointLights() { return m_PointLights; }
 
 float Renderer::GetScreenWidth() const { return m_ScreenWidth; }
 

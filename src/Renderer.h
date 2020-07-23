@@ -45,7 +45,7 @@ public:
   void SetViewMatrix(const Matrix4& view);
   void SetAmbientLight(const Vector3& ambient);
   DirectionalLight& GetDirectionalLight();
-  PointLight& GetPointLight();
+  std::vector<PointLight*> GetPointLights();
 
   float GetScreenWidth() const;
   float GetScreenHeight() const;
@@ -86,7 +86,7 @@ private:
   // Lighting data
   Vector3 m_AmbientLight;
   DirectionalLight m_DirLight;
-  PointLight m_PointLight; // todo make array
+  std::vector<PointLight*> m_PointLights;
 
   // Window
   SDL_Window* m_Window;
