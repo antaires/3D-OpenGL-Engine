@@ -343,13 +343,16 @@ void Renderer::SetLightUniforms(Shader* shader)
 	// Ambient light
 	shader->SetVectorUniform("uAmbientLight", m_AmbientLight);
 	// Directional light
-	shader->SetVectorUniform("uDirLight.mDirection",
-		m_DirLight.m_Direction);
-	shader->SetVectorUniform("uDirLight.mDiffuseColor",
-		m_DirLight.m_DiffuseColor);
-	shader->SetVectorUniform("uDirLight.mSpecColor",
-		m_DirLight.m_SpecColor);
+	shader->SetVectorUniform("uDirLight.mDirection", m_DirLight.m_Direction);
+	shader->SetVectorUniform("uDirLight.mDiffuseColor", m_DirLight.m_DiffuseColor);
+	shader->SetVectorUniform("uDirLight.mSpecColor", m_DirLight.m_SpecColor);
 
+  // TODO make array
+  shader->SetVectorUniform("uPointLight.mPos", m_PointLight.m_Pos);
+  shader->SetVectorUniform("uPointLight.mDiffuseColor", m_PointLight.m_DiffuseColor);
+  shader->SetVectorUniform("uPointLight.mSpecColor", m_PointLight.m_SpecColor);
+  shader->SetFloatUniform("uPointLight.mSpecPower", m_PointLight.m_SpecPower);
+  shader->SetFloatUniform("uPointLight.mRadiusInfluence", m_PointLight.m_RadiusInfluence);
 }
 
 void Renderer::SetViewMatrix(const Matrix4& view) { m_View = view; }
@@ -357,6 +360,9 @@ void Renderer::SetViewMatrix(const Matrix4& view) { m_View = view; }
 void Renderer::SetAmbientLight(const Vector3& ambient) { m_AmbientLight = ambient; }
 
 DirectionalLight& Renderer::GetDirectionalLight() { return m_DirLight; }
+
+// todo make array
+PointLight& Renderer::GetPointLight() { return m_PointLight; }
 
 float Renderer::GetScreenWidth() const { return m_ScreenWidth; }
 

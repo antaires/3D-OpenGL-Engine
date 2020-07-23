@@ -208,11 +208,20 @@ void Game::LoadData()
 	}
 
 	// Setup lights
+  // direction light
 	m_Renderer->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
 	DirectionalLight& dir = m_Renderer->GetDirectionalLight();
 	dir.m_Direction = Vector3(0.0f, -0.707f, -0.707f);
 	dir.m_DiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
 	dir.m_SpecColor = Vector3(0.8f, 0.8f, 0.8f);
+
+  // point lights TODO make array
+  PointLight& point = m_Renderer->GetPointLight();
+  point.m_Pos = Vector3(200.0f, -75.0f, 300.0f);
+  point.m_DiffuseColor = Vector3(0.0f, 0.5f, 1.0f);
+  point.m_SpecColor = Vector3(1.0f, 0.0f, 0.0f);
+  point.m_SpecPower = 0.5f;
+  point.m_RadiusInfluence = 1000;
 
 	// Camera actor
 	m_CameraActor = new CameraActor(this);
