@@ -37,6 +37,20 @@ uniform vec3 uAmbientLight;
 // Directional Light
 uniform DirectionalLight uDirLight;
 
+// create struct for point light
+struct PointLight
+{
+	// position of light
+	vec3 mPos;
+	vec3 mDiffuseColor;
+	vec3 mSpecColor;
+	float mSpecPower;
+	float mRadiusInfluence;
+};
+
+// Point Light todo: make array
+uniform PointLight uPointLight;
+
 void main()
 {
 	// Surface normal
@@ -56,6 +70,25 @@ void main()
 		vec3 Diffuse = uDirLight.mDiffuseColor * NdotL;
 		vec3 Specular = uDirLight.mSpecColor * pow(max(0.0, dot(R, V)), uSpecPower);
 		Phong += Diffuse + Specular;
+	}
+
+	// compute for point light
+	// vector from surface to light
+	vec3 PL = normalize(uPointLight.mPos - fragWorldPos);
+	// reflection of -L about N
+	vec3 PR = normalize(reflect(-PL, N));
+	// compute phong reflection from point light
+	float PNdotPL = dot(N, PL);
+	if (PNdotPL > 0)
+	{
+		// use sphere of influence
+		float distanceFromLight = length(fragWorldPos - uPointLight.mPos);
+		if (distanceFromLight < uPointLight.mRadiusInfluence)
+		{
+			vec3 Diffuse = uPointLight.mDiffuseColor * PNdotPL;
+			vec3 Specular = uPointLight.mSpecColor * pow(max(0.0, dot(PR, V)), uPointLight.mSpecPower);
+			Phong += Diffuse + Specular;
+		}
 	}
 
 	// Final color is texture color times phong light (alpha = 1)
