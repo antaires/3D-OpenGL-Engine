@@ -4,11 +4,13 @@
 #include <fstream>
 #include <sstream>
 
-Shader::Shader()
-  :m_ShaderProgram(0)
+Shader::Shader(std::string& shaderName)
+  : m_ShaderProgram(0)
   , m_VertexShader(0)
   , m_FragShader(0)
-{}
+{
+  name = shaderName;
+}
 
 Shader::~Shader()
 {}
@@ -134,6 +136,11 @@ bool Shader::IsValidProgram()
     return false;
   }
   return true;
+}
+
+const std::string& Shader::GetShaderName() const
+{
+  return name;
 }
 
 void Shader::Unload()

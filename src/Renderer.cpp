@@ -12,7 +12,6 @@
 Renderer::Renderer(Game* game)
   :m_Game(game)
   , m_SpriteShader(nullptr)
-  , m_MeshShader(nullptr)
 {}
 
 Renderer::~Renderer()
@@ -100,8 +99,11 @@ void Renderer::ShutDown()
   delete m_SpriteVerts;
   m_SpriteShader->Unload();
   delete m_SpriteShader;
-  m_MeshShader->Unload();
-  delete m_MeshShader;
+  for(auto ms: m_MeshShaders)
+  {
+    ms->Unload();
+    // delete ms; TODO delete safely
+  }
   SDL_GL_DeleteContext(m_Context);
   SDL_DestroyWindow(m_Window);
 }
@@ -136,14 +138,24 @@ void Renderer::Draw()
   // Enable depth buffering/disable alpha blend
   glEnable(GL_DEPTH_TEST);
   glDisable(GL_BLEND);
-  // Set the mesh shader active
-  m_MeshShader->SetActive();
-  // Update view-projection matrix
-  m_MeshShader->SetMatrixUniform("uViewProj", m_View * m_Projection);
-  SetLightUniforms(m_MeshShader);
-  for (auto mc : m_MeshComps)
+
+  // draw all shaders, grouped by which shader they use
+  for(Shader* shader : m_MeshShaders)
   {
-    mc->Draw(m_MeshShader);
+    // Set the mesh shader active
+    shader->SetActive();
+
+    // Update view-projection matrix
+    shader->SetMatrixUniform("uViewProj", m_View * m_Projection);
+    SetLightUniforms(shader);
+    for (auto mc : m_MeshComps)
+    {
+      // only draw if shader matches mesh components shader
+      if (shader->GetShaderName() == mc->GetShaderName())
+      {
+        mc->Draw(shader);
+      }
+    }
   }
 
   // Draw all sprite components
@@ -251,7 +263,9 @@ Mesh* Renderer::GetMesh(const std::string & fileName)
 
 bool Renderer::LoadShaders()
 {
-  m_SpriteShader = new Shader();
+  // create 2d sprite shaders
+  std::string spriteShader = "Sprite";
+  m_SpriteShader = new Shader(spriteShader);
   if(!m_SpriteShader->Load("shaders/Sprite.vert", "shaders/Sprite.frag"))
   {
     return false;
@@ -261,13 +275,24 @@ bool Renderer::LoadShaders()
   Matrix4 viewProj = Matrix4::CreateSimpleViewProj(m_ScreenWidth, m_ScreenHeight);
   m_SpriteShader->SetMatrixUniform("uViewProj", viewProj);
 
-  // Create basic mesh shader
-	m_MeshShader = new Shader();
-	if (!m_MeshShader->Load("shaders/Phong.vert", "shaders/Phong.frag"))
+  // Create all 3d shaders:
+  // basic
+  std::string basicShader = "BasicMesh";
+  Shader* basicMesh = new Shader(basicShader);
+  if (!basicMesh->Load("shaders/BasicMesh.vert", "shaders/BasicMesh.frag"))
+  {
+    return false;
+  }
+  m_MeshShaders.push_back(basicMesh);
+  // phong
+  std::string phongShaderName = "Phong";
+	Shader* phongShader = new Shader(phongShaderName);
+	if (!phongShader->Load("shaders/Phong.vert", "shaders/Phong.frag"))
 	{
 		return false;
 	}
-	m_MeshShader->SetActive();
+  m_MeshShaders.push_back(phongShader);
+  phongShader->SetActive();
 
 	// Set the view-projection matrix
 	m_View = Matrix4::CreateLookAt(
@@ -282,7 +307,10 @@ bool Renderer::LoadShaders()
     , 25.0f                 // near plane
     , 10000.0f              // far plane
   );
-	m_MeshShader->SetMatrixUniform("uViewProj", m_View * m_Projection);
+  for(auto ms : m_MeshShaders)
+  {
+    ms->SetMatrixUniform("uViewProj", m_View * m_Projection);
+  }
 
   return true;
 }

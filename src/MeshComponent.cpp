@@ -54,3 +54,8 @@ void MeshComponent::SetTextureIndex(size_t index)
 {
   m_TextureIndex = index;
 }
+
+const std::string& MeshComponent::GetShaderName() const
+{
+  return m_Mesh->GetShaderName();
+}

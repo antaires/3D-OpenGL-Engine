@@ -63,8 +63,8 @@ private:
   // Sprite vertex array
   class VertexArray* m_SpriteVerts;
 
-  // Mesh shader
-  class Shader* m_MeshShader;
+  // Mesh shaders
+  std::vector<class Shader*> m_MeshShaders;
 
   // View/projection for 3D shaders
   Matrix4 m_View;
