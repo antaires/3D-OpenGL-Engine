@@ -17,7 +17,7 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsign
   // copy data into vertex buffer
   glBufferData(
     GL_ARRAY_BUFFER                 // active buffer type to write to
-    , numVerts * 5 * sizeof(float)  // number of bytes to copy
+    , numVerts * 8 * sizeof(float)  // number of bytes to copy
     , verts                         // source to copy from (pointer)
     , GL_STATIC_DRAW                // how will we use this data?
   );
@@ -64,7 +64,7 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsign
     , GL_FLOAT
     , GL_FALSE
     , sizeof(float) * 8
-    , reinterpret_cast<void*>(sizeof(float) * 3) // offest pointer
+    , reinterpret_cast<void*>(sizeof(float) * 6) // offest pointer
   );
 }
 

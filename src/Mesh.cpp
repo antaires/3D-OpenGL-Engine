@@ -78,7 +78,7 @@ bool Mesh::Load(const std::string & fileName, Renderer* renderer)
 			if (t == nullptr)
 			{
 				// If it's still null, just use the default texture
-				t = renderer->GetTexture("Assets/Default.png");
+				t = renderer->GetTexture("assets/Default.png");
 			}
 		}
 		m_Textures.emplace_back(t);

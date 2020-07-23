@@ -123,7 +123,7 @@ bool Shader::IsCompiled(GLuint shader)
 bool Shader::IsValidProgram()
 {
   GLint status;
-  // query compile status
+  // query link status
   glGetProgramiv(m_ShaderProgram, GL_LINK_STATUS, &status);
   if(status != GL_TRUE)
   {

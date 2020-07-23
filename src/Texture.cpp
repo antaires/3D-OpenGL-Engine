@@ -7,6 +7,9 @@
 #include "stb_image.h"
 
 Texture::Texture()
+  :m_TextureId(0)
+  , m_Width(0)
+  , m_Height(0)
 {}
 
 Texture::~Texture()
@@ -16,7 +19,6 @@ bool Texture::Load(const std::string& fileName)
 {
   int channels = 0;
 
-  // TODO replace this with SDL or OpenGL and skip SOIL shit
   unsigned char* image = SOIL_load_image(
     fileName.c_str()      // name of file
     , &m_Width
@@ -32,7 +34,10 @@ bool Texture::Load(const std::string& fileName)
 
   // check channels to determine RGB vs RBGA
   int format = GL_RGB;
-  if (channels == 4){format = GL_RGBA;}
+  if (channels == 4)
+  {
+    format = GL_RGBA;
+  }
 
   // create OpenGL texture object and save id, bind and set active
   glGenTextures(1, &m_TextureId);
@@ -81,12 +86,12 @@ int Texture::GetHeight() const
   return m_Height;
 }
 
-unsigned char* Texture::SOIL_load_image(const char *filename, int *width, int *height, int *channels, int force_channels)
+unsigned char* Texture::SOIL_load_image(const char *fileName, int *width, int *height, int *channels, int force_channels)
 {
-	unsigned char *result = stbi_load( filename, width, height, channels, force_channels );
+	unsigned char *result = stbi_load( fileName, width, height, channels, force_channels );
 	if( result == NULL )
 	{
-		SDL_Log("SOIL failed to load image: %s", filename);
+		SDL_Log("SOIL failed to load image: %s", fileName);
 	}
 	return result;
 }

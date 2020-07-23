@@ -23,11 +23,12 @@ bool Renderer::Initialize(float width, float height)
   m_ScreenWidth = width;
   m_ScreenHeight = height;
 
+  /*
   if (SDL_Init(SDL_INIT_VIDEO) != 0)
   {
     SDL_Log("Unable to Initialize SDL: %s", SDL_GetError());
     return false;
-  }
+  }*/
 
   // set up openGL attributes, returns 0 if succes
   // use the core openGL profile
@@ -65,11 +66,13 @@ bool Renderer::Initialize(float width, float height)
   // create open GL context and saves it to member variable
   m_Context = SDL_GL_CreateContext(m_Window);
 
-  // TODO -> store these to screenWidth and screenHeight ?
+  // TODO
   // required for mac! without this, a rectangle is drawn as a rhombus
   int screenWidth, screenHeight;
   SDL_GL_GetDrawableSize(m_Window, &screenWidth, &screenHeight );
   glViewport(0, 0, screenWidth, screenHeight); // adjust to high density screen
+  m_ScreenWidth = (float) screenWidth;
+  m_ScreenHeight = (float) screenHeight;
 
   // init GLEW
   glewExperimental = GL_TRUE;
@@ -109,7 +112,7 @@ void Renderer::UnloadData()
   for(auto t : m_Textures)
   {
     t.second->Unload();
-    // SDL_DestroyTexture(t.second);
+    delete t.second;
   }
   m_Textures.clear();
 
@@ -260,7 +263,7 @@ bool Renderer::LoadShaders()
 
   // Create basic mesh shader
 	m_MeshShader = new Shader();
-	if (!m_MeshShader->Load("Shaders/Phong.vert", "Shaders/Phong.frag"))
+	if (!m_MeshShader->Load("shaders/Phong.vert", "shaders/Phong.frag"))
 	{
 		return false;
 	}
@@ -289,10 +292,10 @@ void Renderer::CreateSpriteVerts()
   // V texture coord is flipped to account for how openGL expects image data upsidedown
   // pos = 3 #s, normals = 3#s, tex UV coords = 2 #s
   float vertexBuffer[] = {
-    -0.5f,  0.5f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, // top left
-		 0.5f,  0.5f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, // top right
-		 0.5f, -0.5f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, // bottom right
-		-0.5f, -0.5f, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f // bottom left
+    -0.5f,  0.5f, 0.f, 0.f, 0.f, 0.0f, 0.f, 0.f, // top left
+		 0.5f,  0.5f, 0.f, 0.f, 0.f, 0.0f, 1.f, 0.f, // top right
+		 0.5f, -0.5f, 0.f, 0.f, 0.f, 0.0f, 1.f, 1.f, // bottom right
+		-0.5f, -0.5f, 0.f, 0.f, 0.f, 0.0f, 0.f, 1.f // bottom left
   };
 
 	unsigned int indexBuffer[] = {
