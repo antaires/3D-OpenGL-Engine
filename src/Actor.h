@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "Math.h"
+#include "InputSystem.h"
 #include <vector>
 #include <cstdint>
 
@@ -30,9 +31,9 @@ public:
   void UpdateComponents(float deltaTime); // updates all components
   virtual void UpdateActor(float deltaTime);
 
-  void ProcessInput(const uint8_t* keyState); // called in Game not overridable
+  void ProcessInput(const InputState& state); // called in Game not overridable
   void ProcessMouse(const uint32_t mouseState, const int x, const int y); // called in Game not overridable
-  virtual void ActorInput(const uint8_t* keyState);
+  virtual void ActorInput(const InputState& state);
 
   // getters / setters
   const Vector3& GetPosition() const;

@@ -23,8 +23,9 @@ void CameraActor::UpdateActor(float deltaTime)
 	GetGame()->GetRenderer()->SetViewMatrix(view);
 }
 
-void CameraActor::ActorInput(const uint8_t* keys)
+void CameraActor::ActorInput(const InputState& state)
 {
+	/*
 	float forwardSpeed = 0.0f;
 	float angularSpeed = 0.0f;
 	// wasd movement
@@ -47,4 +48,5 @@ void CameraActor::ActorInput(const uint8_t* keys)
 
 	m_MoveComp->SetForwardSpeed(forwardSpeed);
 	m_MoveComp->SetAngularSpeed(angularSpeed);
+	*/
 }

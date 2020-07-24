@@ -63,6 +63,8 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
+  m_InputSystem->PrepareForUpdate();
+
   SDL_Event event;
 
   // loop over events in event queue
@@ -76,6 +78,11 @@ void Game::ProcessInput()
         break;
     }
   }
+
+  m_InputSystem->Update();
+  const InputState& keyboardState = m_InputSystem->GetState();
+
+  // TODO process any keys here as desired
 
   // get state of keyboard
   const Uint8* keyState = SDL_GetKeyboardState(NULL);
@@ -94,7 +101,7 @@ void Game::ProcessInput()
   // m_UpdatingActors = true;
   for(auto actor: m_Actors)
   {
-    actor->ProcessInput(keyState);
+    actor->ProcessInput(keyboardState);
     actor->ProcessMouse(mouseState, mouseX, mouseY);
   }
   // m_UpdatingActors = false;

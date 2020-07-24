@@ -47,16 +47,16 @@ void Actor::UpdateComponents(float deltaTime)
 
 void Actor::UpdateActor(float deltaTime){}
 
-void Actor::ProcessInput(const uint8_t* keyState)
+void Actor::ProcessInput(const InputState& state)
 {
   // called in Game not overridable
   if (m_State == E_Active)
   {
     for(auto comp: m_Components)
     {
-      comp->ProcessInput(keyState);
+      comp->ProcessInput(state);
     }
-    ActorInput(keyState);
+    ActorInput(state);
   }
 }
 
@@ -72,7 +72,7 @@ void Actor::ProcessMouse(const uint32_t mouseState, const int x, const int y)
   }
 }
 
-void Actor::ActorInput(const uint8_t* keyState)
+void Actor::ActorInput(const InputState& state)
 {}
 
 Vector3 Actor::GetForward() const

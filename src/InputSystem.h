@@ -10,9 +10,15 @@ enum ButtonState
   , E_Held
 };
 
-struct KeyboardState
+class KeyboardState
 {
-  ButtonState m_ButtonState;
+public:
+  friend class InputSystem;
+  bool GetKeyValue(SDL_Scancode keyCode) const;
+  ButtonState GetKeyState(SDL_Scancode keyCode) const;
+
+  const Uint8* m_CurrentState;
+  Uint8 m_PrevState[SDL_NUM_SCANCODES];
 };
 
 // wrapper that contains current state of input
