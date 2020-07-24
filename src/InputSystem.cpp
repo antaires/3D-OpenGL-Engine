@@ -3,6 +3,11 @@
 // KEYBOARD STATE
 bool KeyboardState::GetKeyValue(SDL_Scancode keyCode) const
 {
+  return m_CurrentState[keyCode];
+}
+
+ButtonState KeyboardState::GetKeyState(SDL_Scancode keyCode) const
+{
   if (m_PrevState[keyCode] == 0)
   {
     if (m_CurrentState[keyCode] == 0)
@@ -23,9 +28,6 @@ bool KeyboardState::GetKeyValue(SDL_Scancode keyCode) const
     }
   }
 }
-
-ButtonState KeyboardState::GetKeyState(SDL_Scancode keyCode) const
-{}
 
 // INPUT SYSTEM
 bool InputSystem::Initialize()

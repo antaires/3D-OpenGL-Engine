@@ -25,28 +25,30 @@ void CameraActor::UpdateActor(float deltaTime)
 
 void CameraActor::ActorInput(const InputState& state)
 {
-	/*
 	float forwardSpeed = 0.0f;
 	float angularSpeed = 0.0f;
 	// wasd movement
-	if (keys[SDL_SCANCODE_W])
+	ButtonState buttonState = state.keyboard.GetKeyState(SDL_SCANCODE_W);
+	if (buttonState == E_Pressed || buttonState == E_Held)
 	{
 		forwardSpeed += 300.0f;
 	}
-	if (keys[SDL_SCANCODE_S])
+	buttonState = state.keyboard.GetKeyState(SDL_SCANCODE_S);
+	if (buttonState == E_Pressed || buttonState == E_Held)
 	{
 		forwardSpeed -= 300.0f;
 	}
-	if (keys[SDL_SCANCODE_A])
+	buttonState = state.keyboard.GetKeyState(SDL_SCANCODE_A);
+	if (buttonState == E_Pressed || buttonState == E_Held)
 	{
 		angularSpeed -= Math::TwoPi;
 	}
-	if (keys[SDL_SCANCODE_D])
+	buttonState = state.keyboard.GetKeyState(SDL_SCANCODE_D);
+	if (buttonState == E_Pressed || buttonState == E_Held)
 	{
 		angularSpeed += Math::TwoPi;
 	}
 
 	m_MoveComp->SetForwardSpeed(forwardSpeed);
 	m_MoveComp->SetAngularSpeed(angularSpeed);
-	*/
 }
