@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "PlaneActor.h"
 #include "CameraActor.h"
+#include "InputSystem.h"
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -19,6 +20,7 @@ Game::Game()
   , m_TicksCount(0)
   , m_IsRunning(true)
   , m_UpdatingActors(false)
+  , m_InputSystem(nullptr)
 {}
 
 bool Game::Initialize()
@@ -41,6 +43,11 @@ bool Game::Initialize()
 
   LoadData();
   m_TicksCount = SDL_GetTicks();
+
+  // set up input system
+  m_InputSystem = new InputSystem();
+  m_InputSystem->Initialize();
+
   return true;
 }
 
@@ -301,5 +308,10 @@ void Game::ShutDown()
   {
     m_Renderer->ShutDown();
   }
+
+  // shut down input system
+  m_InputSystem->ShutDown();
+  delete m_InputSystem;
+
   SDL_Quit();
 }

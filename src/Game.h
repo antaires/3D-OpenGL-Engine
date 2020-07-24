@@ -20,6 +20,8 @@ private:
   bool m_IsRunning;
   bool m_UpdatingActors;
 
+  class InputSystem* m_InputSystem;
+
 public:
   Game();
   bool Initialize();
