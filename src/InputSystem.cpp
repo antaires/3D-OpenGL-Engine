@@ -38,6 +38,8 @@ bool InputSystem::Initialize()
   // clear prev state memory
   memset(m_State.keyboard.m_PrevState, 0, SDL_NUM_SCANCODES);
 
+  // hide cursor
+  SDL_ShowCursor(SDL_FALSE);
 }
 
 void InputSystem::ShutDown()

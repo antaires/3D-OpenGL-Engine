@@ -82,20 +82,22 @@ void Game::ProcessInput()
   m_InputSystem->Update();
   const InputState& keyboardState = m_InputSystem->GetState();
 
-  // TODO process any keys here as desired
-
-  // get state of keyboard
-  const Uint8* keyState = SDL_GetKeyboardState(NULL);
-
+  // todo process any keys here ...
   // if escape pressed, exit Game RunLoop
-  if (keyState[SDL_SCANCODE_ESCAPE])
+  if (keyboardState.keyboard.GetKeyState(SDL_SCANCODE_ESCAPE) == E_Released)
   {
     m_IsRunning = false;
   }
 
+  // get state of keyboard
+  const Uint8* keyState = SDL_GetKeyboardState(NULL);
+
   // get mouse state
   int mouseX, mouseY;
   const uint32_t mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+  // convert from SDL to OpenGL coords
+  mouseX = mouseX - SCREEN_WIDTH / 2;
+  mouseY = SCREEN_HEIGHT / 2 - mouseY;
 
   // handle input
   // m_UpdatingActors = true;
