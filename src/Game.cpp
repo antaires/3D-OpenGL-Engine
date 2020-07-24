@@ -89,22 +89,11 @@ void Game::ProcessInput()
     m_IsRunning = false;
   }
 
-  // get state of keyboard
-  const Uint8* keyState = SDL_GetKeyboardState(NULL);
-
-  // get mouse state
-  int mouseX, mouseY;
-  const uint32_t mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-  // convert from SDL to OpenGL coords
-  mouseX = mouseX - SCREEN_WIDTH / 2;
-  mouseY = SCREEN_HEIGHT / 2 - mouseY;
-
   // handle input
   // m_UpdatingActors = true;
   for(auto actor: m_Actors)
   {
     actor->ProcessInput(keyboardState);
-    actor->ProcessMouse(mouseState, mouseX, mouseY);
   }
   // m_UpdatingActors = false;
 }

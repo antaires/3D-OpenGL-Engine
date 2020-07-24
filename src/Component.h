@@ -13,7 +13,6 @@ public:
   virtual ~Component();
   virtual void Update(float deltaTime);
   virtual void ProcessInput(const InputState& state);
-  virtual void ProcessMouse(const uint32_t mouseState, const int x, const int y);
   virtual void OnUpdateWorldTransform();
   int GetUpdateOrder() const;
 };

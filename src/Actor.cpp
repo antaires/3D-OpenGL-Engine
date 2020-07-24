@@ -60,18 +60,6 @@ void Actor::ProcessInput(const InputState& state)
   }
 }
 
-void Actor::ProcessMouse(const uint32_t mouseState, const int x, const int y)
-{
-  // called in game not overridable
-  if (m_State == E_Active)
-  {
-    for(auto comp: m_Components)
-    {
-      comp->ProcessMouse(mouseState, x, y);
-    }
-  }
-}
-
 void Actor::ActorInput(const InputState& state)
 {}
 

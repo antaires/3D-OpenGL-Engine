@@ -18,10 +18,23 @@ void Component::Update(float deltaTime)
 {}
 
 void Component::ProcessInput(const InputState& state)
-{}
+{
+  /* example keyboard input
+  ButtonState buttonState = state.keyboard.GetKeyState(SDL_SCANCODE_W);
+  if (buttonState == E_Pressed || buttonState == E_Held)
+  {...}
 
-void Component::ProcessMouse(const uint32_t mouseState, const int x, const int y)
-{}
+    example mouse input
+    // left : SDL_BUTTON_LEFT
+    // right: SDL_BUTTON_RIGHT
+    // middle : SDL_BUTTON_MIDDLE
+    // mouse button 4 : SDL_BUTTON_X1
+    // mouse button 5 : SDL_BUTTON_X2
+
+    if (state.mouseState.GetButtonState(SDL_BUTTON_LEFT) == E_Pressed)
+    {...}
+  */
+}
 
 void Component::OnUpdateWorldTransform(){}
 
