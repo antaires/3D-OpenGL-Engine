@@ -6,8 +6,8 @@
 #include "MeshComponent.h"
 #include "Renderer.h"
 #include "PlaneActor.h"
-#include "CameraActor.h"
 #include "InputSystem.h"
+#include "FPSActor.h"
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -15,8 +15,7 @@
 #include <iostream> // remove
 
 Game::Game()
-  : m_CameraActor(nullptr)
-  , m_Renderer(nullptr)
+  : m_Renderer(nullptr)
   , m_TicksCount(0)
   , m_IsRunning(true)
   , m_UpdatingActors(false)
@@ -163,7 +162,10 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	// Create actors
+  // create FPS actor
+  FPSActor* fpsActor = new FPSActor(this);
+
+	// Create scene actors
 	Actor* a = new Actor(this);
 	a->SetPosition(Vector3(200.0f, 75.0f, 0.0f));
 	a->SetScale(100.0f);
@@ -240,9 +242,6 @@ void Game::LoadData()
   pointLights.at(1)->m_SpecPower = 0.2f;
   pointLights.at(1)->m_RadiusInfluence = 1000;
 
-	// Camera actor
-	m_CameraActor = new CameraActor(this);
-
 	// UI elements
 	a = new Actor(this);
 	a->SetPosition(Vector3(-350.0f, -350.0f, 0.0f));
@@ -254,6 +253,12 @@ void Game::LoadData()
 	a->SetScale(0.75f);
 	sc = new SpriteComponent(a);
 	sc->SetTexture(m_Renderer->GetTexture("assets/Radar.png"));
+
+  // crosshair
+  a = new Actor(this);
+  a->SetPosition(Vector3(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0f));
+  sc = new SpriteComponent(a);
+  sc->SetTexture(m_Renderer->GetTexture("assets/Crosshair.png"));
 }
 
 void Game::UnloadData()
