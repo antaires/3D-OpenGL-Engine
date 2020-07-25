@@ -98,6 +98,9 @@ void InputSystem::PrepareForUpdate()
   memcpy(m_State.keyboard.m_PrevState, m_State.keyboard.m_CurrState, SDL_NUM_SCANCODES);
 
   m_State.mouseState.m_PrevButtons = m_State.mouseState.m_CurrButtons;
+
+  // reset scroll wheel
+  m_State.mouseState.m_ScrollWheel = Vector2::Zero;
 }
 
 // called right after SDL_PollEvents loop
@@ -117,6 +120,21 @@ void InputSystem::Update()
 
   m_State.mouseState.m_MousePosition.x = static_cast<float>(x);
   m_State.mouseState.m_MousePosition.y = static_cast<float>(y);
+}
+
+void InputSystem::ProcessEvent(SDL_Event& event)
+{
+  switch(event.type)
+  {
+    case SDL_MOUSEWHEEL:
+      m_State.mouseState.m_ScrollWheel = Vector2(
+        static_cast<float>(event.wheel.x)
+        , static_cast<float>(event.wheel.y)
+      );
+      break;
+    default:
+      break;
+  }
 }
 
 const InputState& InputSystem::GetState() const

@@ -76,6 +76,9 @@ void Game::ProcessInput()
       case SDL_QUIT:
         m_IsRunning = false;
         break;
+      case SDL_MOUSEWHEEL:
+        m_InputSystem->ProcessEvent(event);
+        break;
     }
   }
 

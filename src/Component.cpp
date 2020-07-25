@@ -19,12 +19,12 @@ void Component::Update(float deltaTime)
 
 void Component::ProcessInput(const InputState& state)
 {
-  /* example keyboard input
+  /* KEYBOARD INPUT ex
   ButtonState buttonState = state.keyboard.GetKeyState(SDL_SCANCODE_W);
   if (buttonState == E_Pressed || buttonState == E_Held)
   {...}
 
-    example mouse input
+    MOUSE INPUT ex
     // left : SDL_BUTTON_LEFT
     // right: SDL_BUTTON_RIGHT
     // middle : SDL_BUTTON_MIDDLE
@@ -33,6 +33,9 @@ void Component::ProcessInput(const InputState& state)
 
     if (state.mouseState.GetButtonState(SDL_BUTTON_LEFT) == E_Pressed)
     {...}
+
+  MOUSE SCROLLWHEEL ex
+  Vector2 scroll = state.mouseState.GetScrollWheel();
   */
 }
 

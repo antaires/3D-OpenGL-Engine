@@ -27,8 +27,6 @@ class MouseState
 public:
   friend class InputSystem;
 
-  bool m_IsRelative;
-
   // for mouse position
   const Vector2& GetPosition() const;
   bool GetButtonValue(int button) const;
@@ -38,6 +36,10 @@ private:
   // store button data
   Uint32 m_CurrButtons;
   Uint32 m_PrevButtons;
+
+  Vector2 m_ScrollWheel;
+
+  bool m_IsRelative;
 };
 
 // wrapper that contains current state of input
@@ -57,7 +59,7 @@ public:
   void PrepareForUpdate();
   // called right after SDL_PollEvents loop
   void Update();
-
+  void ProcessEvent(SDL_Event& event);
   void SetRelativeMouseMode(bool value);
 
   const InputState& GetState() const;
