@@ -35,6 +35,8 @@ void MoveComponent::Update(float deltaTime)
     // update position based on strafe
     pos += m_Owner->GetRight() * m_StrafeSpeed * deltaTime;
 
+    // update based on pitch speed 
+
     m_Owner->SetPosition(pos);
   }
 }

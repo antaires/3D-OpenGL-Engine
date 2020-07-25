@@ -1,6 +1,8 @@
 #include "FPSCamera.h"
 #include "Actor.h"
 
+#include <iostream> // todo remove
+
 FPSCamera::FPSCamera(class Actor* owner)
   :CameraComponent(owner)
   , m_PitchSpeed(0.0f)
@@ -17,6 +19,7 @@ void FPSCamera::Update(float deltaTime)
 
   // update pitch by pitch speed
   m_Pitch = m_PitchSpeed * deltaTime;
+
   // clamp pitch to [-max, +max]
   m_Pitch = Math::Clamp(m_Pitch, -m_MaxPitch, m_MaxPitch);
   // make quaternion representing pitch rotation

@@ -10,6 +10,5 @@ CameraComponent::CameraComponent(class Actor* owner, int updateOrder)
 void CameraComponent::SetViewMatrix(const Matrix4& view)
 {
   // pass view matrix to renderer
-  Game* game = m_Owner->GetGame();
-  game->GetRenderer()->SetViewMatrix(view);
+  m_Owner->GetGame()->GetRenderer()->SetViewMatrix(view);
 }

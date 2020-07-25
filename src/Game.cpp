@@ -256,7 +256,7 @@ void Game::LoadData()
 
   // crosshair
   a = new Actor(this);
-  a->SetPosition(Vector3(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0f));
+  a->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
   sc = new SpriteComponent(a);
   sc->SetTexture(m_Renderer->GetTexture("assets/Crosshair.png"));
 }

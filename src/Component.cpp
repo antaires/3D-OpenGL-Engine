@@ -35,7 +35,13 @@ void Component::ProcessInput(const InputState& state)
   {...}
 
   MOUSE RELATIVE
-  
+  if (state.mouseState.m_MousePosition.y != 0)
+  {
+    // convert to approximately [-1.0, 1.0]
+    pitchSpeed = state.mouseState.m_MousePosition.y / maxMouseSpeed;
+    // multiply by rotation / sec
+    pitchSpeed *= maxPitchSpeed;
+  }
 
   MOUSE SCROLLWHEEL ex
   Vector2 scroll = state.mouseState.GetScrollWheel();
