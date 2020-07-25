@@ -47,6 +47,8 @@ bool Game::Initialize()
   // set up input system
   m_InputSystem = new InputSystem();
   m_InputSystem->Initialize();
+  // GAME SPECIFIC (relative mouse movement for rotating FPS actor)
+  m_InputSystem->SetRelativeMouseMode(true);
 
   return true;
 }

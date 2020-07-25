@@ -41,5 +41,8 @@ void MoveComponent::Update(float deltaTime)
 
 float MoveComponent::GetAngularSpeed() const { return m_AngularSpeed; }
 float MoveComponent::GetForwardSpeed() const { return m_ForwardSpeed; }
+float MoveComponent::GetStrafeSpeed() const { return m_StrafeSpeed; }
+
 void MoveComponent::SetAngularSpeed(float angularSpeed) { m_AngularSpeed = angularSpeed; }
 void MoveComponent::SetForwardSpeed(float speed) { m_ForwardSpeed = speed; }
+void MoveComponent::SetStrafeSpeed(float speed) { m_StrafeSpeed = speed; }

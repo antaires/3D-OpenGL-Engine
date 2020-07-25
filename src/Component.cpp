@@ -24,15 +24,18 @@ void Component::ProcessInput(const InputState& state)
   if (buttonState == E_Pressed || buttonState == E_Held)
   {...}
 
-    MOUSE INPUT ex
-    // left : SDL_BUTTON_LEFT
-    // right: SDL_BUTTON_RIGHT
-    // middle : SDL_BUTTON_MIDDLE
-    // mouse button 4 : SDL_BUTTON_X1
-    // mouse button 5 : SDL_BUTTON_X2
+  MOUSE INPUT ex
+  // left : SDL_BUTTON_LEFT
+  // right: SDL_BUTTON_RIGHT
+  // middle : SDL_BUTTON_MIDDLE
+  // mouse button 4 : SDL_BUTTON_X1
+  // mouse button 5 : SDL_BUTTON_X2
 
-    if (state.mouseState.GetButtonState(SDL_BUTTON_LEFT) == E_Pressed)
-    {...}
+  if (state.mouseState.GetButtonState(SDL_BUTTON_LEFT) == E_Pressed)
+  {...}
+
+  MOUSE RELATIVE
+  
 
   MOUSE SCROLLWHEEL ex
   Vector2 scroll = state.mouseState.GetScrollWheel();

@@ -31,8 +31,9 @@ public:
   const Vector2& GetPosition() const;
   bool GetButtonValue(int button) const;
   ButtonState GetButtonState(int button) const;
-private:
+
   Vector2 m_MousePosition;
+private:
   // store button data
   Uint32 m_CurrButtons;
   Uint32 m_PrevButtons;

@@ -14,6 +14,8 @@ public:
 
   float GetAngularSpeed() const;
   float GetForwardSpeed() const;
+  float GetStrafeSpeed() const;
   void SetAngularSpeed(float angularSpeed);
   void SetForwardSpeed(float speed);
+  void SetStrafeSpeed(float speed);
 };
