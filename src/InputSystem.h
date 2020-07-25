@@ -26,6 +26,9 @@ class MouseState
 {
 public:
   friend class InputSystem;
+
+  bool m_IsRelative;
+
   // for mouse position
   const Vector2& GetPosition() const;
   bool GetButtonValue(int button) const;
@@ -54,6 +57,8 @@ public:
   void PrepareForUpdate();
   // called right after SDL_PollEvents loop
   void Update();
+
+  void SetRelativeMouseMode(bool value);
 
   const InputState& GetState() const;
 private:
