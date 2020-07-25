@@ -45,6 +45,7 @@ public:
   void SetState(State state);
   class Game* GetGame();
   Vector3 GetForward() const;
+  Vector3 GetRight() const;
 
   void ComputeWorldTransform();
   Matrix4 GetWorldTransform() const;

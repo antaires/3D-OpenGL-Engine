@@ -6,6 +6,7 @@ MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
   :Component(owner, updateOrder)
   , m_AngularSpeed(0.0f)
   , m_ForwardSpeed(0.0f)
+  , m_StrafeSpeed(0.0f)
 {}
 
 void MoveComponent::Update(float deltaTime)
@@ -24,10 +25,16 @@ void MoveComponent::Update(float deltaTime)
     m_Owner->SetRotation(rot);
   }
 
-  if (!Math::NearZero(m_ForwardSpeed))
+  if (!Math::NearZero(m_ForwardSpeed) || !Math::NearZero(m_StrafeSpeed))
   {
     Vector3 pos = m_Owner->GetPosition();
+
+    // update pos based on forward speed
     pos += m_Owner->GetForward() * m_ForwardSpeed * deltaTime;
+
+    // update position based on strafe
+    pos += m_Owner->GetRight() * m_StrafeSpeed * deltaTime;
+
     m_Owner->SetPosition(pos);
   }
 }
