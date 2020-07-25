@@ -47,6 +47,9 @@ public:
   DirectionalLight& GetDirectionalLight();
   std::vector<PointLight*> GetPointLights();
 
+  Vector3 Unproject(const Vector3& screenPoint) const;
+  void GetScreenDirection(Vector3& outStart, Vector3& outDir) const;
+
   float GetScreenWidth() const;
   float GetScreenHeight() const;
 private:

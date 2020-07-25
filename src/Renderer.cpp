@@ -387,6 +387,35 @@ void Renderer::SetAmbientLight(const Vector3& ambient) { m_AmbientLight = ambien
 
 DirectionalLight& Renderer::GetDirectionalLight() { return m_DirLight; }
 
+Vector3 Renderer::Unproject(const Vector3& screenPoint) const
+{
+    // convert screenPiont to device coords (between -1 and +1)
+    Vector3 deviceCoord = screenPoint;
+    deviceCoord.x /= (m_ScreenWidth) * 0.5f;
+    deviceCoord.y /= (m_ScreenHeight) * 0.5f;
+
+    // transform vector by unprojection matrix
+    Matrix4 unprojection = m_View * m_Projection;
+    unprojection.Invert();
+    return Vector3::TransformWithPerspDiv(deviceCoord, unprojection);
+}
+
+void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
+{
+  // get start point (in center of screen on near plane)
+  Vector3 screenPoint(0.0f, 0.0f, 0.0f);
+  outStart = Unproject(screenPoint);
+
+  // get end point (in center of screen, between near and far clipping plane)
+  screenPoint.z = 0.9f;
+  Vector3 end = Unproject(screenPoint);
+
+  // get direction vector
+  outDir = end - outStart;
+  outDir.Normalize();
+}
+
+
 // todo make array
 std::vector<PointLight*> Renderer::GetPointLights() { return m_PointLights; }
 
