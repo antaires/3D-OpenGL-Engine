@@ -18,7 +18,7 @@ void FPSCamera::Update(float deltaTime)
   Vector3 cameraPos = m_Owner->GetPosition();
 
   // update pitch by pitch speed
-  m_Pitch = m_PitchSpeed * deltaTime;
+  m_Pitch += m_PitchSpeed * deltaTime;
 
   // clamp pitch to [-max, +max]
   m_Pitch = Math::Clamp(m_Pitch, -m_MaxPitch, m_MaxPitch);
