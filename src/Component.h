@@ -15,4 +15,5 @@ public:
   virtual void ProcessInput(const InputState& state);
   virtual void OnUpdateWorldTransform();
   int GetUpdateOrder() const;
+  class Actor* GetOwner();
 };

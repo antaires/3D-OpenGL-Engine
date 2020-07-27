@@ -51,3 +51,8 @@ void Component::ProcessInput(const InputState& state)
 void Component::OnUpdateWorldTransform(){}
 
 int Component::GetUpdateOrder() const {return m_UpdateOrder;}
+
+Actor* Component::GetOwner()
+{
+  return m_Owner;
+}

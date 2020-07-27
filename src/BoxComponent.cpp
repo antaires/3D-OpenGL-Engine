@@ -1,5 +1,7 @@
 #include "BoxComponent.h"
+#include "Game.h"
 #include "Actor.h"
+#include "PhysWorld.h"
 
 BoxComponent::BoxComponent(class Actor* owner, int updateOrder)
   :Component(owner, updateOrder)
@@ -7,12 +9,12 @@ BoxComponent::BoxComponent(class Actor* owner, int updateOrder)
   , m_WorldBox(Vector3::Zero, Vector3::Zero)
   , m_ShouldRotate(true)
 {
-  // m_Owner->GetGame()->GetPhysicalWorld()->AddBox(this);
+  m_Owner->GetGame()->GetPhysicalWorld()->AddBox(this);
 }
 
 BoxComponent::~BoxComponent()
 {
-  // m_Owner->GetGame()->GetPhysicalWorld()->RemoveBox(this);
+  m_Owner->GetGame()->GetPhysicalWorld()->RemoveBox(this);
 }
 
 void BoxComponent::OnUpdateWorldTransform()

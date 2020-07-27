@@ -19,6 +19,7 @@ private:
   bool m_UpdatingActors;
 
   class InputSystem* m_InputSystem;
+  class PhysWorld* m_PhysWorld;
 
 public:
   Game();
@@ -30,7 +31,7 @@ public:
   void RemoveActor(class Actor* actor);
 
   class Renderer* GetRenderer();
-
+  class PhysWorld* GetPhysicalWorld();
 private:
   void ProcessInput();
   void UpdateGame();

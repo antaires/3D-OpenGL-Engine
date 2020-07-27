@@ -8,6 +8,7 @@
 #include "PlaneActor.h"
 #include "InputSystem.h"
 #include "FPSActor.h"
+#include "PhysWorld.h"
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -20,6 +21,7 @@ Game::Game()
   , m_IsRunning(true)
   , m_UpdatingActors(false)
   , m_InputSystem(nullptr)
+  , m_PhysWorld(nullptr)
 {}
 
 bool Game::Initialize()
@@ -29,6 +31,9 @@ bool Game::Initialize()
     SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
     return false;
   }
+
+  // set up physical world
+  m_PhysWorld = new PhysWorld(this);
 
   // Create the renderer
   m_Renderer = new Renderer(this);
@@ -308,6 +313,12 @@ Renderer* Game::GetRenderer()
 {
   return m_Renderer;
 }
+
+PhysWorld* Game::GetPhysicalWorld()
+{
+  return m_PhysWorld;
+}
+
 
 void Game::ShutDown()
 {
