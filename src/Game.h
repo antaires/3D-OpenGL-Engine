@@ -31,7 +31,7 @@ public:
   void RemoveActor(class Actor* actor);
 
   class Renderer* GetRenderer();
-  class PhysWorld* GetPhysicalWorld();
+  class PhysWorld* GetPhysWorld();
 private:
   void ProcessInput();
   void UpdateGame();

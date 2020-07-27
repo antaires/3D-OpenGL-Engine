@@ -29,7 +29,8 @@ public:
 
 	// Tests collisions using naive pairwise
 	void TestPairwise(std::function<void(class Actor*, class Actor*)> f);
-	// Test collisions using sweep and prune
+
+  // Test collisions using sweep and prune (only test for collision if overlapping x-axis)
 	void TestSweepAndPrune(std::function<void(class Actor*, class Actor*)> f);
 
   // add / remove box components from the world

@@ -314,7 +314,7 @@ Renderer* Game::GetRenderer()
   return m_Renderer;
 }
 
-PhysWorld* Game::GetPhysicalWorld()
+PhysWorld* Game::GetPhysWorld()
 {
   return m_PhysWorld;
 }

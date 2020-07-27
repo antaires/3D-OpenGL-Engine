@@ -63,6 +63,32 @@ void Actor::ProcessInput(const InputState& state)
 void Actor::ActorInput(const InputState& state)
 {}
 
+void Actor::RotateToNewForward(const Vector3& forward)
+{
+  // figure out difference between original (unit x) and new
+  float dot = Vector3::Dot(Vector3::UnitX, forward);
+  float angle = Math::Acos(dot);
+
+  // are we facing down X ?
+  if (dot > 0.999f)
+  {
+    SetRotation(Quaternion::Identity);
+  }
+  // are we facing down -X ?
+  else if (dot < -0.999f)
+  {
+    SetRotation(Quaternion(Vector3::UnitZ, Math::Pi));
+  }
+  else
+  {
+    // rotate about axis from cross product
+    Vector3 axis = Vector3::Cross(Vector3::UnitX, forward);
+    axis.Normalize();
+    SetRotation(Quaternion(axis, angle));
+  }
+}
+
+
 Vector3 Actor::GetForward() const
 {
   return Vector3::Transform(Vector3::UnitX, m_Rotation);

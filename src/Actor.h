@@ -34,6 +34,8 @@ public:
   void ProcessInput(const InputState& state); // called in Game not overridable
   virtual void ActorInput(const InputState& state);
 
+  void RotateToNewForward(const Vector3& forward);
+
   // getters / setters
   const Vector3& GetPosition() const;
   void SetPosition(const Vector3& pos);
