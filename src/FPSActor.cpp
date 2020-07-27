@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "FPSCamera.h"
 #include "MeshComponent.h"
+#include "BoxComponent.h"
 
 FPSActor::FPSActor(Game* game)
 	:Actor(game)

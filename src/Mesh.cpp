@@ -14,6 +14,7 @@ Mesh::Mesh()
   :m_VertexArray(nullptr)
   , m_Radius(0.0f)
   , m_SpecPower(100.0f)
+  , m_Box(Vector3::Infinity, Vector3::NegInfinity)
 {}
 
 Mesh::~Mesh()
@@ -108,6 +109,9 @@ bool Mesh::Load(const std::string & fileName, Renderer* renderer)
 		Vector3 pos(vert[0].GetDouble(), vert[1].GetDouble(), vert[2].GetDouble());
 		m_Radius = Math::Max(m_Radius, pos.LengthSq());
 
+    // build AABB
+    m_Box.UpdateMinMax(pos);
+
 		// Add the floats
 		for (rapidjson::SizeType i = 0; i < vert.Size(); i++)
 		{
@@ -173,3 +177,5 @@ const std::string& Mesh::GetShaderName() const { return m_ShaderName; }
 float Mesh::GetRadius() const { return m_Radius; }
 
 float Mesh::GetSpecPower() const { return m_SpecPower; }
+
+const AABB& Mesh::GetBox() const { return m_Box; }

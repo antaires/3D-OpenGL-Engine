@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Collision.h"
 #include <vector>
 #include <string>
 
@@ -15,6 +16,7 @@ private:
   // stores object space bounding sphere radius
   float m_Radius;
   float m_SpecPower; // specular power of surface
+  class AABB m_Box;
 public:
   Mesh();
   ~Mesh();
@@ -27,5 +29,5 @@ public:
   const std::string& GetShaderName() const;
   float GetRadius() const;
   float GetSpecPower() const;
-
+  const AABB& GetBox() const;
 };

@@ -14,4 +14,5 @@ private:
   class FPSCamera* m_Camera;
   Actor* m_Model;
   class MeshComponent* m_MeshComp;
+  class BoxComponent* m_BoxComp;
 };
