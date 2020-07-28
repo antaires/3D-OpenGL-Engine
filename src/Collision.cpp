@@ -275,11 +275,12 @@ bool Intersect(const Sphere& a, const Sphere& b)
 bool Intersect(const AABB& a, const AABB& b)
 {
   // separating axis theorem
-  bool noInterSection = a.m_Max.x < b.m_Min.x ||
+  bool noInterSection =
+    a.m_Max.x < b.m_Min.x ||
     a.m_Max.y < b.m_Min.y ||
     a.m_Max.z < b.m_Min.z ||
 
-    b.m_Max.x < a.m_Min.y ||
+    b.m_Max.x < a.m_Min.x ||
     b.m_Max.y < a.m_Min.y ||
     b.m_Max.z < a.m_Min.z;
     // if none of these are true, they must intersect
