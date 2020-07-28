@@ -6,6 +6,9 @@
 #include "FPSCamera.h"
 #include "MeshComponent.h"
 #include "BoxComponent.h"
+#include "PlaneActor.h"
+
+#include <iostream> // todo remove
 
 FPSActor::FPSActor(Game* game)
 	:Actor(game)
@@ -13,16 +16,28 @@ FPSActor::FPSActor(Game* game)
 	m_MoveComp = new MoveComponent(this);
   m_Camera = new FPSCamera(this);
 
-  // set up mesh
+  // set up rifle mesh
   m_Model = new Actor(game);
   m_Model->SetScale(0.75f);
   m_MeshComp = new MeshComponent(m_Model);
-  m_MeshComp->SetMesh(game->GetRenderer()->GetMesh("assets/Rifle.gpmesh"));
+	Mesh* mesh = game->GetRenderer()->GetMesh("assets/Rifle.gpmesh");
+  m_MeshComp->SetMesh(mesh);
+
+	// set up box component
+	m_BoxComp = new BoxComponent(this);
+	AABB myBox(
+		Vector3(-25.0f, -25.0f, -87.5f)
+		, Vector3(25.0f, 25.0f, 87.5f)
+	);
+	m_BoxComp->SetObjectBox(myBox);
+	m_BoxComp->SetShouldRotate(false);
 }
 
 void FPSActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
+
+	FixCollisions();
 
   // update position of FPS model relative to actor position
   const Vector3 modelOffset(Vector3(10.0f, 10.0f, -10.0f));
@@ -93,4 +108,53 @@ void FPSActor::ActorInput(const InputState& state)
     pitchSpeed *= maxPitchSpeed;
   }
   m_Camera->SetPitchSpeed(pitchSpeed);
+}
+
+void FPSActor::FixCollisions()
+{
+	// recompute my world transform to update world box
+	ComputeWorldTransform();
+
+	const AABB& playerBox = m_BoxComp->GetWorldBox();
+	Vector3 pos = GetPosition();
+
+	auto& planeActors = GetGame()->GetPlaneActors();
+	for(auto plane : planeActors)
+	{
+		// do we collide with this plane actor ?
+		const AABB& planeBox = plane->GetBox()->GetWorldBox();
+		if(Intersect(playerBox, planeBox))
+		{
+			// Calculate all our differences
+			float dx1 = planeBox.m_Max.x - playerBox.m_Min.x;
+			float dx2 = planeBox.m_Min.x - playerBox.m_Max.x;
+			float dy1 = planeBox.m_Max.y - playerBox.m_Min.y;
+			float dy2 = planeBox.m_Min.y - playerBox.m_Max.y;
+			float dz1 = planeBox.m_Max.z - playerBox.m_Min.z;
+			float dz2 = planeBox.m_Min.z - playerBox.m_Max.z;
+
+			// Set dx to whichever of dx1/dx2 have a lower abs (same for dy, dz)
+			float dx = Math::Abs(dx1) < Math::Abs(dx2) ? dx1 : dx2;
+			float dy = Math::Abs(dy1) < Math::Abs(dy2) ? dy1 : dy2;
+			float dz = Math::Abs(dz1) < Math::Abs(dz2) ? dz1 : dz2;
+
+			// Whichever is closest, adjust x/y position
+			if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
+			{
+				pos.x += dx;
+			}
+			else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
+			{
+				pos.y += dy;
+			}
+			else
+			{
+				pos.z += dz;
+			}
+
+			// set position and update box component
+			SetPosition(pos);
+			m_BoxComp->OnUpdateWorldTransform();
+		}
+	}
 }

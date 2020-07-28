@@ -9,6 +9,8 @@ public:
 
 	void UpdateActor(float deltaTime) override;
   void ActorInput(const InputState& state) override;
+
+  void FixCollisions();
 private:
 	class MoveComponent* m_MoveComp;
   class FPSCamera* m_Camera;

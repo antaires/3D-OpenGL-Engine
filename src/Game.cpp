@@ -309,6 +309,20 @@ void Game::RemoveActor(Actor* actor)
   }
 }
 
+void Game::AddPlane(class PlaneActor* planeActor)
+{
+  m_PlaneActors.emplace_back(planeActor);
+}
+
+void Game::RemovePlane(class PlaneActor* planeActor)
+{
+  auto it = std::find(m_PlaneActors.begin(), m_PlaneActors.end(), planeActor);
+  if (it != m_PlaneActors.end())
+  {
+    m_PlaneActors.erase(it);
+  }
+}
+
 Renderer* Game::GetRenderer()
 {
   return m_Renderer;
@@ -319,6 +333,10 @@ PhysWorld* Game::GetPhysWorld()
   return m_PhysWorld;
 }
 
+std::vector<class PlaneActor*>& Game::GetPlaneActors()
+{
+  return m_PlaneActors;
+}
 
 void Game::ShutDown()
 {

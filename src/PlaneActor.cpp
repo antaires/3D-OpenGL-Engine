@@ -17,10 +17,10 @@ PlaneActor::PlaneActor(Game* game)
 	m_Box = new BoxComponent(this);
 	m_Box->SetObjectBox(mesh->GetBox());
 
-	//game->AddPlane(this);
+	game->AddPlane(this);
 }
 
 PlaneActor::~PlaneActor()
 {
-	//GetGame()->RemovePlane(this);
+	GetGame()->RemovePlane(this);
 }

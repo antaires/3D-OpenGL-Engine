@@ -1,6 +1,8 @@
 #include "Collision.h"
 #include <array>
 
+#include <iostream> // todo remove
+
 //*****************************//
 //       LINE SEGMENT          //
 //*****************************//
@@ -178,9 +180,9 @@ void AABB::UpdateMinMax(const Vector3& point)
   m_Min.y = Math::Min(m_Min.y, point.y);
   m_Min.z = Math::Min(m_Min.z, point.z);
 
-  m_Max.x = Math::Min(m_Max.x, point.x);
-  m_Max.y = Math::Min(m_Max.y, point.y);
-  m_Max.z = Math::Min(m_Max.z, point.z);
+  m_Max.x = Math::Max(m_Max.x, point.x);
+  m_Max.y = Math::Max(m_Max.y, point.y);
+  m_Max.z = Math::Max(m_Max.z, point.z);
 }
 
 void AABB::Rotate(const Quaternion& q)

@@ -11,6 +11,7 @@ class Game {
 private:
   std::vector<class Actor*> m_Actors;
   std::vector<class Actor*> m_PendingActors;
+  std::vector<class PlaneActor*> m_PlaneActors;
 
   class Renderer* m_Renderer;
   Uint32 m_TicksCount;
@@ -29,9 +30,12 @@ public:
 
   void AddActor(class Actor* actor);
   void RemoveActor(class Actor* actor);
+  void AddPlane(class PlaneActor* planeActor);
+  void RemovePlane(class PlaneActor* planeActor);
 
   class Renderer* GetRenderer();
   class PhysWorld* GetPhysWorld();
+  std::vector<class PlaneActor*>& GetPlaneActors();
 private:
   void ProcessInput();
   void UpdateGame();
