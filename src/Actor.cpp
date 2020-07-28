@@ -88,7 +88,6 @@ void Actor::RotateToNewForward(const Vector3& forward)
   }
 }
 
-
 Vector3 Actor::GetForward() const
 {
   return Vector3::Transform(Vector3::UnitX, m_Rotation);
@@ -98,6 +97,11 @@ Vector3 Actor::GetRight() const
 {
   // rotate right axis using quaternion rotation
   return Vector3::Transform(Vector3::UnitY, m_Rotation);
+}
+
+Vector3 Actor::GetUp() const
+{
+  return Vector3::Transform(Vector3::UnitZ, m_Rotation);
 }
 
 void Actor::ComputeWorldTransform()

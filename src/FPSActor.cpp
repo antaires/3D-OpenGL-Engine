@@ -12,6 +12,7 @@
 
 FPSActor::FPSActor(Game* game)
 	:Actor(game)
+	, m_IsGrounded(false)
 {
 	m_MoveComp = new MoveComponent(this);
   m_Camera = new FPSCamera(this);
@@ -31,6 +32,9 @@ FPSActor::FPSActor(Game* game)
 	);
 	m_BoxComp->SetObjectBox(myBox);
 	m_BoxComp->SetShouldRotate(false);
+
+	// todo remove
+	SetPosition(Vector3(0.0f, 0.0f, 500.0f));
 }
 
 void FPSActor::UpdateActor(float deltaTime)
@@ -81,6 +85,13 @@ void FPSActor::ActorInput(const InputState& state)
   m_MoveComp->SetForwardSpeed(forwardSpeed);
   m_MoveComp->SetStrafeSpeed(strafeSpeed);
 
+	// check for jumping
+	buttonState = state.keyboard.GetKeyState(SDL_SCANCODE_SPACE);
+	if (buttonState == E_Pressed && m_MoveComp->GetIsGrounded())
+	{
+		m_MoveComp->SetJumpSpeed(1200.0f);
+	}
+
   // use mouse movement to get rotation using relative mouse movement
   // assume movement usually between -500 & 500
   // update angular speed by relative x motion of mouse
@@ -118,6 +129,8 @@ void FPSActor::FixCollisions()
 	const AABB& playerBox = m_BoxComp->GetWorldBox();
 	Vector3 pos = GetPosition();
 
+	m_MoveComp->SetIsGrounded(false); // gets set true if collision with top of AABB
+
 	auto& planeActors = GetGame()->GetPlaneActors();
 	for(auto plane : planeActors)
 	{
@@ -150,6 +163,12 @@ void FPSActor::FixCollisions()
 			else
 			{
 				pos.z += dz;
+			}
+
+			// check if grounded (dz2 is top of plane)
+			if (dz2 < 0.0f)
+			{
+				m_MoveComp->SetIsGrounded(true);
 			}
 
 			// set position and update box component

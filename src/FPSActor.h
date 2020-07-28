@@ -17,4 +17,5 @@ private:
   Actor* m_Model;
   class MeshComponent* m_MeshComp;
   class BoxComponent* m_BoxComp;
+  bool m_IsGrounded; 
 };

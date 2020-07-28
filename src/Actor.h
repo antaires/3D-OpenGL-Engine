@@ -48,6 +48,7 @@ public:
   class Game* GetGame();
   Vector3 GetForward() const;
   Vector3 GetRight() const;
+  Vector3 GetUp() const;
 
   void ComputeWorldTransform();
   Matrix4 GetWorldTransform() const;
