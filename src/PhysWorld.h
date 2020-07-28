@@ -17,8 +17,10 @@ public:
 		Vector3 m_Point;
 		// Normal at collision
 		Vector3 m_Normal;
+
 		// Component collided with
 		class BoxComponent* m_Box;
+
 		// Owning actor of componnet
 		class Actor* m_Actor;
 	};
@@ -38,5 +40,9 @@ public:
   void RemoveBox(class BoxComponent* box);
 private:
   class Game* m_Game;
-  std::vector<class BoxComponent*> m_Boxes;
+
+  // sorted by axis for sweep and prune
+  std::vector<class BoxComponent*> m_BoxesX;
+  std::vector<class BoxComponent*> m_BoxesY;
+  std::vector<class BoxComponent*> m_BoxesZ;
 };

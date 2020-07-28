@@ -12,7 +12,6 @@
 
 FPSActor::FPSActor(Game* game)
 	:Actor(game)
-	, m_IsGrounded(false)
 {
 	m_MoveComp = new MoveComponent(this);
   m_Camera = new FPSCamera(this);
@@ -34,7 +33,7 @@ FPSActor::FPSActor(Game* game)
 	m_BoxComp->SetShouldRotate(false);
 
 	// todo remove
-	SetPosition(Vector3(0.0f, 0.0f, 500.0f));
+	SetPosition(Vector3(0.0f, 0.0f, 200.0f));
 }
 
 void FPSActor::UpdateActor(float deltaTime)
