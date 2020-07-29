@@ -3,7 +3,14 @@
 class VertexArray
 {
 public:
-  VertexArray(const float* verts, unsigned int numVerts, const unsigned int* indices, unsigned int numIndices);
+  enum Layout { PosNormTex, PosNormSkinTex };
+
+  VertexArray(const void* verts
+    , unsigned int numVerts
+    , const unsigned int* indices
+    , unsigned int numIndices
+    , Layout layout
+  );
   ~VertexArray();
 
   // activate this vertex array so it can be drawn

@@ -350,7 +350,7 @@ void Renderer::CreateSpriteVerts()
 		2, 3, 0
 	};
 
-  m_SpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
+  m_SpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6, VertexArray::PosNormTex);
 }
 
 void Renderer::SetLightUniforms(Shader* shader)
