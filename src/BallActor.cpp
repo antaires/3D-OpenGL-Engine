@@ -8,7 +8,7 @@
 BallActor::BallActor(Game* game)
   :Actor(game)
   , m_MyMove(nullptr)
-  , m_LifeSpan(10.0f)
+  , m_LifeSpan(20.0f)
 {
   // SetScale(10.0f);
   MeshComponent* mc = new MeshComponent(this);
@@ -36,5 +36,5 @@ void BallActor::SetPlayer(Actor* player)
 
 void BallActor::HitTarget()
 {
-  // play audio
+  // play audio / explosion
 }

@@ -9,12 +9,14 @@ public:
 
 	void UpdateActor(float deltaTime) override;
   void ActorInput(const InputState& state) override;
-
-  void FixCollisions();
 private:
 	class MoveComponent* m_MoveComp;
   class FPSCamera* m_Camera;
   Actor* m_Model;
   class MeshComponent* m_MeshComp;
   class BoxComponent* m_BoxComp;
+  float m_ShootTimer;
+
+  void FixCollisions();
+  void Shoot();
 };

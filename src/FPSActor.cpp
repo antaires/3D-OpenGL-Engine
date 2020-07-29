@@ -7,11 +7,14 @@
 #include "MeshComponent.h"
 #include "BoxComponent.h"
 #include "PlaneActor.h"
+#include "Constants.h"
+#include "BallActor.h"
 
 #include <iostream> // todo remove
 
 FPSActor::FPSActor(Game* game)
 	:Actor(game)
+	, m_ShootTimer(PLAYER_SHOOT_TIMER)
 {
 	m_MoveComp = new MoveComponent(this);
   m_Camera = new FPSCamera(this);
@@ -53,6 +56,9 @@ void FPSActor::UpdateActor(float deltaTime)
   // init rotation of actor rotation
   Quaternion quat = GetRotation();
   m_Model->SetRotation(quat);
+
+	// decrease shoot timer
+	m_ShootTimer -= deltaTime;
 }
 
 void FPSActor::ActorInput(const InputState& state)
@@ -118,6 +124,13 @@ void FPSActor::ActorInput(const InputState& state)
     pitchSpeed *= maxPitchSpeed;
   }
   m_Camera->SetPitchSpeed(pitchSpeed);
+
+	// check for shooting
+	if (state.mouseState.GetButtonValue(SDL_BUTTON_LEFT) && m_ShootTimer < 0.0f)
+	{
+		Shoot();
+		m_ShootTimer = PLAYER_SHOOT_TIMER;
+	}
 }
 
 void FPSActor::FixCollisions()
@@ -175,4 +188,29 @@ void FPSActor::FixCollisions()
 			m_BoxComp->OnUpdateWorldTransform();
 		}
 	}
+}
+
+void FPSActor::Shoot()
+{
+	// center of screen
+	Vector3 screenPoint(0.0f, 0.0f, 0.0f);
+	Vector3 start = GetGame()->GetRenderer()->Unproject(screenPoint);
+
+	// get end point (center of screen, between near and far)
+	screenPoint.z = 0.9f;
+	Vector3 end  = GetGame()->GetRenderer()->Unproject(screenPoint);
+
+	// get direction vector
+	Vector3 direction = end - start;
+	direction.Normalize();
+
+	// create bullet
+	BallActor* bullet = new BallActor(GetGame());
+	bullet->SetPlayer(this);
+	bullet->SetPosition(start + direction * 20.0f);
+
+	// rotate ball to face new direction
+	bullet->RotateToNewForward(direction);
+
+	// play fire sound
 }
