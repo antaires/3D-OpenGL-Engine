@@ -2,6 +2,8 @@
 
 const int MAP_SIZE = 15;
 
+const int MAX_SKELETON_BONES = 2147483647;
+
 const float FOX_SPEED = 200.0f;
 const float FOX_ANGULAR_SPEED = 50.0f;
 
