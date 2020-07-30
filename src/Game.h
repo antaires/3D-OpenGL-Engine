@@ -25,6 +25,9 @@ private:
   // map for loaded skeletons
   std::unordered_map<std::string, class Skeleton*> m_Skeletons;
 
+  // map for loaded animations
+  std::unordered_map<std::string, class Animation*> m_Animations;
+
 public:
   Game();
   bool Initialize();
@@ -36,6 +39,7 @@ public:
   void AddPlane(class PlaneActor* planeActor);
   void RemovePlane(class PlaneActor* planeActor);
   class Skeleton* GetSkeleton(std::string& fileName);
+  class Animation* GetAnimation(std::string& fileName);
 
   class Renderer* GetRenderer();
   class PhysWorld* GetPhysWorld();

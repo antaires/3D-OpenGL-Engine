@@ -11,6 +11,7 @@
 #include "FPSActor.h"
 #include "PhysWorld.h"
 #include "Skeleton.h"
+#include "Animation.h"
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -355,6 +356,28 @@ Skeleton* Game::GetSkeleton(std::string& fileName)
   }
 }
 
+Animation* Game::GetAnimation(std::string& fileName)
+{
+  auto it = m_Animations.find(fileName);
+  if (it != m_Animations.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    // load skeleton
+    Animation* anim = new Animation();
+    if (anim->Load(fileName))
+    {
+      m_Animations.emplace(fileName, anim);
+    } else
+    {
+      delete anim;
+      anim = nullptr;
+    }
+    return anim;
+  }
+}
 
 Renderer* Game::GetRenderer()
 {

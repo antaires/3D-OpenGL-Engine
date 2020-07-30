@@ -1,5 +1,6 @@
 #include "Skeleton.h"
-// #include "uMatrixPalette.h"
+#include "MatrixPalette.h"
+#include "Animation.h"
 #include <fstream>
 #include <sstream>
 #include "include/rapidjson/document.h"
@@ -118,8 +119,8 @@ bool Skeleton::Load(const std::string& fileName)
 
 // getters
 size_t Skeleton::GetNumBones() const { return m_Bones.size(); }
-const Bone& Skeleton::GetBone(size_t idx) const { return m_Bones[idx]; }
-const std::vector<Bone>& Skeleton::GetBones() const { return m_Bones; }
+const Skeleton::Bone& Skeleton::GetBone(size_t idx) const { return m_Bones[idx]; }
+const std::vector<Skeleton::Bone>& Skeleton::GetBones() const { return m_Bones; }
 const std::vector<Matrix4>& Skeleton::GetGlobalInvBindPoses() const { return m_GlobalInvBindPoses; }
 
 // computes the global inverse bind pose for each bone

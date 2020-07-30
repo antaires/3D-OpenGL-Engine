@@ -5,17 +5,17 @@
 #include <string>
 #include <vector>
 
-// definition for each bone in the Skeleton
-struct Bone
-{
-  BoneTransform m_LocalBindPose;
-  std::string m_Name;
-  int m_Parent;
-};
-
 class Skeleton
 {
 public:
+  // definition for each bone in the Skeleton
+  struct Bone
+  {
+    BoneTransform m_LocalBindPose;
+    std::string m_Name;
+    int m_Parent;
+  };
+  
   // Load from file
   bool Load(const std::string& fileName);
 
