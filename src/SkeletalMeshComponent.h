@@ -8,4 +8,6 @@ public:
   SkeletalMeshComponent(class Actor* owner);
 
   void Draw(class Shader* shader) override;
+private:
+  class Skeleton* m_Skeleton;
 };

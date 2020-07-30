@@ -22,6 +22,9 @@ private:
   class InputSystem* m_InputSystem;
   class PhysWorld* m_PhysWorld;
 
+  // map for loaded skeletons
+  std::unordered_map<std::string, class Skeleton*> m_Skeletons;
+
 public:
   Game();
   bool Initialize();
@@ -32,6 +35,7 @@ public:
   void RemoveActor(class Actor* actor);
   void AddPlane(class PlaneActor* planeActor);
   void RemovePlane(class PlaneActor* planeActor);
+  class Skeleton* GetSkeleton(std::string& fileName);
 
   class Renderer* GetRenderer();
   class PhysWorld* GetPhysWorld();

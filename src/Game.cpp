@@ -10,6 +10,7 @@
 #include "InputSystem.h"
 #include "FPSActor.h"
 #include "PhysWorld.h"
+#include "Skeleton.h"
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -330,6 +331,30 @@ void Game::RemovePlane(class PlaneActor* planeActor)
     m_PlaneActors.erase(it);
   }
 }
+
+Skeleton* Game::GetSkeleton(std::string& fileName)
+{
+  auto it = m_Skeletons.find(fileName);
+  if (it != m_Skeletons.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    // load skeleton
+    Skeleton* sk = new Skeleton();
+    if (sk->Load(fileName))
+    {
+      m_Skeletons.emplace(fileName, sk);
+    } else
+    {
+      delete sk;
+      sk = nullptr;
+    }
+    return sk;
+  }
+}
+
 
 Renderer* Game::GetRenderer()
 {

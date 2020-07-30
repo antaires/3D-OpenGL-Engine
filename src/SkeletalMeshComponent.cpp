@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "Texture.h"
 #include "VertexArray.h"
+#include "Skeleton.h"
 
 
 SkeletalMeshComponent::SkeletalMeshComponent(class Actor* owner)
