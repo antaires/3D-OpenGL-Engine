@@ -5,6 +5,7 @@
 #include "VertexArray.h"
 #include "SpriteComponent.h"
 #include "MeshComponent.h"
+#include "SkeletalMeshComponent.h"
 
 #include <algorithm>
 #include <GL/glew.h>
@@ -177,6 +178,20 @@ void Renderer::Draw()
     }
   }
 
+  // draw all skeletal skinned meshes
+  m_SkinnedShader->SetActive();
+  // update view projection matrix
+  m_SkinnedShader->SetMatrixUniform("uViewProj", m_View * m_Projection);
+  // update lighting Uniforms
+  SetLightUniforms(m_SkinnedShader);
+  for(auto sk : m_SkeletalMeshComps)
+  {
+    //if(sk->GetVisible())
+    //{
+      sk->Draw(m_SkinnedShader);
+    //}
+  }
+
   // Draw all sprite components
   // Disable depth buffering
   glDisable(GL_DEPTH_TEST);
@@ -223,13 +238,28 @@ void Renderer::RemoveSprite(SpriteComponent* sprite)
 
 void Renderer::AddMeshComp(MeshComponent* mesh)
 {
-	m_MeshComps.emplace_back(mesh);
+  if (mesh->IsSkeletal())
+  {
+    SkeletalMeshComponent* sk = static_cast<SkeletalMeshComponent*>(mesh);
+    m_SkeletalMeshComps.emplace_back(sk);
+  } else
+  {
+    m_MeshComps.emplace_back(mesh);
+  }
 }
 
 void Renderer::RemoveMeshComp(MeshComponent* mesh)
 {
-	auto iter = std::find(m_MeshComps.begin(), m_MeshComps.end(), mesh);
-	m_MeshComps.erase(iter);
+  if (mesh->IsSkeletal())
+  {
+    SkeletalMeshComponent* sk = static_cast<SkeletalMeshComponent*>(mesh);
+    auto iter = std::find(m_SkeletalMeshComps.begin(), m_SkeletalMeshComps.end(), sk);
+    m_SkeletalMeshComps.erase(iter);
+  } else
+  {
+    auto iter = std::find(m_MeshComps.begin(), m_MeshComps.end(), mesh);
+    m_MeshComps.erase(iter);
+  }
 }
 
 Texture* Renderer::GetTexture(const std::string& fileName)
@@ -312,6 +342,16 @@ bool Renderer::LoadShaders()
 	}
   m_MeshShaders.push_back(phongShader);
   phongShader->SetActive();
+
+  // skinning vertex shader
+  std::string SkinnedShaderName = "Skinned";
+	m_SkinnedShader = new Shader(SkinnedShaderName);
+	if (!m_SkinnedShader->Load("shaders/Skinned.vert", "shaders/Phong.frag"))
+	{
+		return false;
+	}
+  m_MeshShaders.push_back(m_SkinnedShader);
+  m_SkinnedShader->SetActive();
 
 	// Set the view-projection matrix
 	m_View = Matrix4::CreateLookAt(

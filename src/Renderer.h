@@ -67,6 +67,7 @@ private:
 
   // All mesh components drawn
   std::vector<class MeshComponent*> m_MeshComps;
+  std::vector<class SkeletalMeshComponent*> m_SkeletalMeshComps;
 
   // Game
   class Game* m_Game;
@@ -75,6 +76,8 @@ private:
   class Shader* m_SpriteShader;
   // Sprite vertex array
   class VertexArray* m_SpriteVerts;
+
+  class Shader* m_SkinnedShader; // for animations
 
   // Mesh shaders
   std::vector<class Shader*> m_MeshShaders;

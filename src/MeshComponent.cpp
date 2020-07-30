@@ -7,10 +7,11 @@
 #include "Texture.h"
 #include "VertexArray.h"
 
-MeshComponent::MeshComponent(class Actor* owner)
+MeshComponent::MeshComponent(class Actor* owner, bool isSkinned)
   :Component(owner)
   , m_Mesh(nullptr)
   , m_TextureIndex(0)
+  , m_IsSkeletal(isSkinned)
 {
   m_Owner->GetGame()->GetRenderer()->AddMeshComp(this);
 }
@@ -58,4 +59,9 @@ void MeshComponent::SetTextureIndex(size_t index)
 const std::string& MeshComponent::GetShaderName() const
 {
   return m_Mesh->GetShaderName();
+}
+
+bool MeshComponent::IsSkeletal() const
+{
+  return m_IsSkeletal;
 }

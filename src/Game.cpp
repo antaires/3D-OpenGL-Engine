@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "SpriteComponent.h"
 #include "MeshComponent.h"
+#include "SkeletalMeshComponent.h"
 #include "Renderer.h"
 #include "PlaneActor.h"
 #include "InputSystem.h"
@@ -185,6 +186,13 @@ void Game::LoadData()
 	a->SetScale(3.0f);
 	mc = new MeshComponent(a);
 	mc->SetMesh(m_Renderer->GetMesh("assets/Sphere.gpmesh"));
+
+  // skeletal actor
+  a = new Actor(this);
+  a->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+  a->SetScale(3.0f);
+  SkeletalMeshComponent* sk = new SkeletalMeshComponent(a);
+  sk->SetMesh(m_Renderer->GetMesh("assets/CatWarrior.gpmesh"));
 
 	// Setup floor
 	const float start = -1250.0f;
