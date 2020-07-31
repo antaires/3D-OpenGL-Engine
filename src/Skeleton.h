@@ -15,7 +15,7 @@ public:
     std::string m_Name;
     int m_Parent;
   };
-  
+
   // Load from file
   bool Load(const std::string& fileName);
 

@@ -13,6 +13,23 @@ SkeletalMeshComponent::SkeletalMeshComponent(class Actor* owner)
   :MeshComponent(owner, true)
 {}
 
+void SkeletalMeshComponent::Update(float deltaTime)
+{
+  if(m_Animation && m_Skeleton)
+  {
+    m_AnimTime += deltaTime * m_AnimPlayRate;
+
+    // wrap around anim time if past duration
+    while(m_AnimTime > m_Animation->GetDuration())
+    {
+      m_AnimTime -= m_Animation->GetDuration();
+    }
+
+    // recompute matrix palette
+    ComputeMatrixPalette();
+  }
+}
+
 void SkeletalMeshComponent::Draw(class Shader* shader)
 {
   if (m_Mesh)
@@ -64,3 +81,6 @@ float SkeletalMeshComponent::PlayAnimation(const Animation* anim, float playRate
 
   return m_Animation->GetDuration();
 }
+
+void SkeletalMeshComponent::SetSkeleton(const class Skeleton* sk)
+{ m_Skeleton = sk; }

@@ -5,6 +5,13 @@
 #include "include/rapidjson/document.h"
 #include <SDL2/SDL_log.h>
 
+Animation::Animation()
+	:m_NumBones(0)
+	, m_NumFrames(0)
+	, m_Duration(0.0f)
+	, m_FrameDuration(0.0f)
+{}
+
 bool Animation::Load(const std::string& fileName)
 {
 	std::ifstream file(fileName);

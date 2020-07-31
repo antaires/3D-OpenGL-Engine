@@ -5,6 +5,9 @@
 uniform mat4 uWorldTransform;
 uniform mat4 uViewProj;
 
+// uniform for matrix palette
+uniform mat4 uMatrixPalette[96];
+
 // Attribute 0 is position, 1 is normal, 2 is tex coords.
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inNormal;
@@ -23,15 +26,29 @@ void main()
 {
 	// Convert position to homogeneous coordinates
 	vec4 pos = vec4(inPosition, 1.0);
+
+	// skin the position
+	vec4 skinnedPos = (pos * uMatrixPalette[inSkinBones.x]) * inSkinWeights.x;
+	skinnedPos += (pos * uMatrixPalette[inSkinBones.y]) * inSkinWeights.y;
+	skinnedPos += (pos * uMatrixPalette[inSkinBones.z]) * inSkinWeights.z;
+	skinnedPos += (pos * uMatrixPalette[inSkinBones.w]) * inSkinWeights.w;
+
 	// Transform position to world space
-	pos = pos * uWorldTransform;
+	skinnedPos = skinnedPos * uWorldTransform;
 	// Save world position
-	fragWorldPos = pos.xyz;
+	fragWorldPos = skinnedPos.xyz;
 	// Transform to clip space
-	gl_Position = pos * uViewProj;
+	gl_Position = skinnedPos * uViewProj;
+
+	// skin the vertex normal
+	vec4 skinnedNormal = vec4(inNormal, 0.0f);
+	skinnedNormal = (skinnedNormal * uMatrixPalette[inSkinBones.x]) * inSkinWeights.x
+		+ (skinnedNormal * uMatrixPalette[inSkinBones.y]) * inSkinWeights.y
+		+ (skinnedNormal * uMatrixPalette[inSkinBones.z]) * inSkinWeights.z
+		+ (skinnedNormal * uMatrixPalette[inSkinBones.w]) * inSkinWeights.w;
 
 	// Transform normal into world space (w = 0)
-	fragNormal = (vec4(inNormal, 0.0f) * uWorldTransform).xyz;
+	fragNormal = (skinnedNormal * uWorldTransform).xyz;
 
 	// Pass along the texture coordinate to frag shader
 	fragTexCoord = inTexCoord;

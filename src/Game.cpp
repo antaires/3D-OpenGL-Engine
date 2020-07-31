@@ -195,6 +195,10 @@ void Game::LoadData()
   a->SetScale(3.0f);
   SkeletalMeshComponent* sk = new SkeletalMeshComponent(a);
   sk->SetMesh(m_Renderer->GetMesh("assets/CatWarrior.gpmesh"));
+  std::string catSkel = "assets/CatWarrior.gpskel";
+  sk->SetSkeleton(GetSkeleton(catSkel));
+  std::string catAnim = "assets/CatRunSprint.gpanim";
+  sk->PlayAnimation(GetAnimation(catAnim), 1.25f);
 
 	// Setup floor
 	const float start = -1250.0f;

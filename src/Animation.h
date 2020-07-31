@@ -8,6 +8,7 @@
 class Animation
 {
 public:
+  Animation();
   bool Load(const std::string& fileName);
 
   // getters
