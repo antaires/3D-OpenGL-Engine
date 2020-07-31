@@ -12,6 +12,7 @@
 #include "PhysWorld.h"
 #include "Skeleton.h"
 #include "Animation.h"
+#include "FollowActor.h"
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -171,7 +172,10 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
   // create FPS actor
-  FPSActor* fpsActor = new FPSActor(this);
+  // FPSActor* fpsActor = new FPSActor(this);
+
+  // set up follow actor
+  FollowActor* followActor = new FollowActor(this);
 
 	// Create scene actors
 	Actor* a = new Actor(this);
@@ -189,7 +193,9 @@ void Game::LoadData()
 	mc = new MeshComponent(a);
 	mc->SetMesh(m_Renderer->GetMesh("assets/Sphere.gpmesh"));
 
-  // skeletal actor
+
+  /*
+  // Running in place cat actor (not moveable)
   a = new Actor(this);
   a->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
   a->SetScale(3.0f);
@@ -199,6 +205,7 @@ void Game::LoadData()
   sk->SetSkeleton(GetSkeleton(catSkel));
   std::string catAnim = "assets/CatRunSprint.gpanim";
   sk->PlayAnimation(GetAnimation(catAnim), 1.25f);
+  */
 
 	// Setup floor
 	const float start = -1250.0f;
