@@ -21,7 +21,7 @@ void SkeletalMeshComponent::Draw(class Shader* shader)
     shader->SetMatrixUniform("uWorldTransform", m_Owner->GetWorldTransform());
 
     // Set the matrix palette
-    //shader->SetMatrixUniforms("uMatrixPalette", &m_Palette.m_Entry[0], MAX_SKELETON_BONES);
+    shader->SetMatrixUniforms("uMatrixPalette", &m_Palette.m_Entry[0], MAX_SKELETON_BONES);
 
     // Set specular power
     shader->SetFloatUniform("uSpecPower", m_Mesh->GetSpecPower());

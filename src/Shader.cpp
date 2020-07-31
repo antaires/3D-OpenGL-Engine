@@ -60,6 +60,20 @@ void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix)
   );
 }
 
+void Shader::SetMatrixUniforms(const char* name, Matrix4* matrices, unsigned count)
+{
+  // find the uniform by this name
+  GLuint loc = glGetUniformLocation(m_ShaderProgram, name);
+
+  // send the matrix data to the uniform
+  glUniformMatrix4fv(
+    loc                      // unform ID
+    , count                  // number of matrices
+    , GL_TRUE                // set to true if using row vectors
+    , matrices->GetAsFloatPtr() // pointer to matrix data
+  );
+}
+
 void Shader::SetVectorUniform(const char* name, const Vector3& vector)
 {
 	GLuint loc = glGetUniformLocation(m_ShaderProgram, name);
